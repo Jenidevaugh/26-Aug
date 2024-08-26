@@ -1,0 +1,64 @@
+Within the context of this application
+1. Vendor (Address)
+2. Admin (Contract deployer)
+
+----------------------------------------------------------------------------
+
+
+What are the tech stack and functionalities of App?
+
+1. Smart contracts for listing 
+    Process to follow will include 
+
+2. Pinata SDK for storing of products image to be passed to smart contract through 
+    a simultaneous process using the CCID from IPFS
+
+
+----------------------------------------------------------------------------
+
+
+Funtionalities - Admin
+1. See products that has been put up for review in contracts2. Can approve products to be 
+viewed in store using a conditional statement if have been approved by Admin
+
+2. If contract has the ability to approve vendor (Address)
+
+--------------------------------------
+Funtionalities - Vendor
+1. Able to List product in smart contract
+2. See purchased products 
+3. Confirm if product have been sent for delivery through smart contracts
+4.
+
+
+Funtionalities - Buyer
+1. Able to see listed Products through contracts only
+2. Purchase products through normal checkout process
+3. See all products bought and shipping link for individual products purchased 
+(has to be provided by the Vendor)
+
+In Profile
+4. Can see stake position on Rollux
+5.
+
+
+///////////////////////////////
+NOTES
+
+h-height in the sign in should be removed
+
+
+POINTING SYSTEM WITH CHECKOUT
+
+1. In the case of a user having a point, the app will have to 1st check the amount that 1,000,000 will equals (e.g if 1M points = 10$)
+
+2. And then this will then be minused if choosen from the current balance of the total
+checkout amount in USD.
+
+{ NB: Assume a user has 1M points in their balance, -
+choosing to offset this balance with their points will take the }
+
+3. Then there will be a contract which will collect this amount and not the already deployed
+contract that is supposed to receive the original product sale, just for the sake of keeping track
+
+4. 

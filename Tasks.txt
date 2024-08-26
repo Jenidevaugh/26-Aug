@@ -1,0 +1,32 @@
+TASKS
+
+1. Need to add a place to swicth networ from the drawable side bar to switch network
+
+2. Connect wallet and detect way to switch network if the networ is not on the supposed network
+
+3. 
+
+
+22 AUG
+
+1.  List Product page
+2.  View product details page
+
+    - in view -
+
+3.  Cart page to view products for checkout 
+4.  Account page to view list of ordered products 
+5.  View products listed by Vendor
+6.  Add product page by (First Admin page button to be active if Vendor is approved)
+7.  Add product to contract
+
+    - in view checkout-
+  (after price has been passed to checkout page,)
+
+8.  /PaymentPage should be able to check each individual USD -> token Price price for each product to be passed 
+    to contract.
+9.  Show total Products to be paid for which will be paid individually (stored in an array and called after each)
+    on checkout 
+
+Payment Page alternative will have a slider up after the checkout button has been clicked
+this makes parsing product on cart easier.
