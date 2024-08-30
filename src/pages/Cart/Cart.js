@@ -52,14 +52,24 @@ const Cart = () => {
 
   useEffect(() => {
     if (totalAmt <= 200) {
-      setShippingCharge(30);
+      setShippingCharge(0);
     } else if (totalAmt <= 400) {
-      setShippingCharge(25);
+      setShippingCharge(0);
     } else if (totalAmt > 401) {
-      setShippingCharge(20);
+      setShippingCharge(0);
     }
   }, [totalAmt]);
 
+// useEffect(() => {
+//   if (totalAmt <= 200) {
+//     setShippingCharge(30);
+//   } else if (totalAmt <= 400) {
+//     setShippingCharge(25);
+//   } else if (totalAmt > 401) {
+//     setShippingCharge(20);
+//   }
+// }, [totalAmt]);
+//
   
   
   useEffect(() => {

@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { createWalletClient, custom } from 'viem';
-import { rollux, } from 'viem/chains';
+import { bsc, rollux, syscoin, } from 'viem/chains';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { FaCopy, FaFaucet, FaGamepad, FaInfo, FaPlay, FaShoppingCart } from "react-icons/fa";
-
+import { switchChain } from 'viem/actions';
 
 const ConnectSwitch = () => {
   const [address, setAddress] = useState('');
@@ -48,14 +48,43 @@ const ConnectSwitch = () => {
 
   const [isAddingChain, setIsAddingChain] = useState(false);
 
+  
+  //Switch Networks
+  const switchToBSC = async ({id}) => {
+    try {
 
-  const SwitchChain = ({ chainId }) => {
+      await walletClient.switchChain({ id: bsc.id })
+
+    } catch (error) {
+      console.error('Error switching to Rollux Mainnet:', error);
+    }
+  };
+  const switchToRollux = async ({id}) => {
+    try {
+
+      await walletClient.switchChain({ id: rollux.id })
+
+    } catch (error) {
+      console.error('Error switching to Rollux Mainnet:', error);
+    }
+  };
+  const switchToSYS = async ({id}) => {
+    try {
+
+      await walletClient.switchChain({ id: syscoin.id })
+
+    } catch (error) {
+      console.error('Error switching to Rollux Mainnet:', error);
+    }
+  };
+
+
+  const SwitchChain = ({ id }) => {
     const switchToSyscoinChain = async () => {
       try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${rollux.id.toString(16)}` }],
-        });
+
+        await walletClient.switchChain({ id: rollux.id })
+
       } catch (error) {
         console.error('Error switching to Rollux Mainnet:', error);
       }
@@ -174,7 +203,7 @@ const ConnectSwitch = () => {
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
         >
-          Swithch Chain 
+          Swithch Chain
         </Button>
         <Menu
           id="basic-menu"
@@ -186,18 +215,18 @@ const ConnectSwitch = () => {
           }}
         >
           <MenuItem className='gap-1' onClick={handleClose}>Syscoin
-            <span onClick={'switchToSyscoinChain'}>
+            <span onClick={switchToSYS}>
             </span> <FaCopy />
             {/*Connect Wallet*/}
           </MenuItem>
 
           <MenuItem className='gap-1' onClick={handleClose}>ROllux
-            <span onClick={'switchToSyscoinChain'}>
+            <span onClick={switchToRollux}>
             </span> <FaFaucet />
           </MenuItem>
 
-          <MenuItem className='gap-1' onClick={handleClose}>Chain 3
-            <span onClick={'switchToSyscoinChain'}>
+          <MenuItem className='gap-1' onClick={handleClose}>BSC
+            <span onClick={switchToBSC}>
             </span> <FaGamepad />
           </MenuItem>
         </Menu>

@@ -16,18 +16,18 @@ import { rollux } from "viem/chains";
 import { useSelector } from "react-redux";
 import { hexToBigInt, bytesToBigInt } from "viem";
 import { ethers } from 'ethers';
+import { parseEther } from "viem";
+import { estimateGas } from "viem/actions";
+//import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
+ import { privateKeyToAccount } from "viem/accounts";
+
 
 //COnnect Public client for viem
 const publicClient = createPublicClient({
     chain: rollux,
-    transport: http()
+    transport: http('https://rpc.ankr.com/rollux')
 });
 
-
-const walletClient = createWalletClient({
-    chain: rollux,
-    transport: custom(window.ethereum)
-});
 
 
 function PaymentDraweable() {
@@ -39,6 +39,13 @@ function PaymentDraweable() {
     const [wasConnected, setWasConnected] = useState(false);
     const productsCheck = useSelector((state) => state.orebiReducer.products);
 
+    
+
+const walletClient = createWalletClient({
+    account: address,
+    chain: rollux,
+    transport: custom(window.ethereum)
+});
     const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
     useEffect(() => {
@@ -86,44 +93,167 @@ function PaymentDraweable() {
             functionName: 'convertPriceToTokenEquivalent',
             args: [price],  // Pass the product price here
         });
-
+       
         // Convert the result to BigInt (if necessary) and return as a string
         const tokenPriceString = convertPriceToTokenEquivalent;
         const tokenPriceBigInt = hexToBigInt(tokenPriceString);
         // const tokenPriceBigInt = ethers.BigNumber.from(tokenPriceString).toString();
 
-        console.log(tokenPriceBigInt, `Token equivalent for price: ${price}`);
+        console.log(tokenPriceBigInt.toString(), `Token equivalent for price: ${price}`);
         return tokenPriceBigInt
     };
 
-    const handleTestCheckoutMany = async () => {
-        const [addressa] = await walletClient.getAddresses();
+  const handleTestCheckoutMany = async () => {
+      const [addressa] = await walletClient.getAddresses();
+ 
+      // Iterating over each product in the productsCheck array before passed to contract
+      for (const product of productsCheck) {
+          const { _id, price, quantity } = product;
+ 
 
-        // Iterating over each product in the productsCheck array before passed to contract
-        for (const product of productsCheck) {
-            const { _id, price, quantity } = product;
+    //      const bundlerClient = createBundlerClient({
+    //        address, 
+    //        publicClient,
+    //        transport: custom(window.ethereum),
+    //      })
+           
+          for (let i = 0; i < quantity; i++) {
+              try {
+                  // Will have to Check the token price for all product  in Cart for price and convert it to a string
+                  const tokenPrice = await checkTokenPrice(price);
+ 
+                  const estimate = await publicClient.getGasPrice();
+ 
+                  console.log(estimate.toString(), 'gas fees');
+ 
+          
+                  const buyProduct = await walletClient.writeContract({
+                      account: addressa,
+                      address: Commercecontract,
+                      abi: CommerceABI,
+                      functionName: 'buyProduct',
+                      args: [_id],
+                     // nonce: '28',
+                       value: parseEther(tokenPrice.toString()),
+                       maxFeePerGas: ('400000000'),
+                      gas: ('3000000'),
+                      
+                      
+                  });
+ 
 
-            for (let i = 0; i < quantity; i++) {
-                try {
-                    // Will have to Check the token price for all product  in Cart for price and convert it to a string
-                    const tokenPrice = await checkTokenPrice(price);
+                  const proceed = walletClient.prepareTransactionRequest(buyProduct);
+ 
+                  console.log(buyProduct, `Checkout hash for product ID: ${_id}`);
+              } catch (error) {
+                  console.error(`Error processing product ID: ${_id}`, error);
+              }
+          }
+      }
+  };
 
-                    console.log(Number(tokenPrice + "000000000000000000"))
-                    const buyProduct = await walletClient.writeContract({
-                        account: addressa,
-                        address: Commercecontract,
-                        abi: CommerceABI,
-                        functionName: 'buyProduct',
-                        args: [_id, tokenPrice],
-                    });
+  const handleTestCheckoutMany1 = async () => {
+      const [addressa] = await walletClient.getAddresses();
+ 
 
-                    console.log(buyProduct, `Checkout hash for product ID: ${_id}`);
-                } catch (error) {
-                    console.error(`Error processing product ID: ${_id}`, error);
-                }
-            }
-        }
-    };
+ //   const bundlerClient = createBundlerClient({
+ //     publicClient,
+ //     transport: http(''),
+ //   });
+ //   
+
+      const owner = privateKeyToAccount('0xdd5d5c24083341d6472668bcbd9ceb2e189ae88a966d071da1e1b7ac958f90f1')
+
+
+   //  const account = await toCoinbaseSmartAccount({ 
+   //    createPublicClient, 
+   //    owners: [owner]
+   //  }) 
+   //  // Iterating over each product in the productsCheck array before passed to contract
+      for (const product of productsCheck) {
+          const { _id, price, quantity } = product;
+ 
+
+      //  const bundlerClient = createBundlerClient({
+      //    address, 
+      //    publicClient,
+      //    transport: custom(window.ethereum),
+      //  })
+           
+          for (let i = 0; i < quantity; i++) {
+              try {
+                  // Will have to Check the token price for all product  in Cart for price and convert it to a string
+                  const tokenPrice = await checkTokenPrice(price);
+ 
+                  const estimate = await publicClient.getGasPrice();
+ 
+                  console.log(estimate.toString(), 'gas fees');
+ 
+          
+                  const buyProduct = await walletClient.writeContract({
+                      account: addressa,
+                      address: Commercecontract,
+                      abi: CommerceABI,
+                      functionName: 'buyProduct',
+                      args: [_id],
+                     // nonce: '28',
+                       value: parseEther(tokenPrice.toString()),
+                       estimateGas: (estimate),
+                      gas: ('300000000'),
+                      
+                  });
+ 
+
+                  const proceed = walletClient.prepareTransactionRequest(buyProduct);
+ 
+                  console.log(buyProduct, `Checkout hash for product ID: ${_id}`);
+              } catch (error) {
+                  console.error(`Error processing product ID: ${_id}`, error);
+              }
+          }
+      }
+  };
+
+//const handleTestCheckoutMany = async () => {
+//    const [addressa] = await walletClient.getAddresses();
+//
+//    for (const product of productsCheck) {
+//        const { _id, price, quantity } = product;
+//
+//        for (let i = 0; i < quantity; i++) {
+//            try {
+//                const tokenPrice = await checkTokenPrice(price);
+//
+//                // Estimate gas for the transaction
+//                const estimatedGas = await publicClient.estimateGas({
+//                    account: addressa,
+//                    address: Commercecontract,
+//                     value: parseEther(tokenPrice.toString()),
+//                });
+//
+//                console.log(`Estimated gas for product ID: ${_id} is ${estimatedGas.toString()}`);
+//
+//                  console.log(estimateGas.toString(), 'gas fees');
+//
+//                // Execute the transaction with the estimated gas limit
+//                const buyProduct = await walletClient.writeContract({
+//                    account: addressa,
+//                    address: Commercecontract,
+//                    abi: CommerceABI,
+//                    functionName: 'buyProduct',
+//                    args: [_id],
+//                    value: parseEther(tokenPrice.toString()),
+//                    gasLimit: estimatedGas,  // Use the estimated gas limit
+//                    maxPriorityFeePerGas: '300000000' // Adjust if needed
+//                });
+//
+//                console.log(buyProduct, `Checkout hash for product ID: ${_id}`);
+//            } catch (error) {
+//                console.error(`Error processing product ID: ${_id}`, error);
+//            }
+//        }
+//    }
+//};
 
     console.log(productsCheck);
 

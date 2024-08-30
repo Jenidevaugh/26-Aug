@@ -4,7 +4,7 @@ import Footer from "../../components/home/Footer/Footer";
 import FooterBottom from "../../components/home/Footer/FooterBottom";
 import { Link, useNavigate } from "react-router-dom";
 import { useAccount } from "wagmi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProfileLog from "./ProfileLog";
 import { GetProducts } from "../Shop/GetProd";
 import { createPublicClient, createWalletClient } from "viem";
@@ -27,6 +27,8 @@ const walletClient = createWalletClient({
 const UserData = () => {
   const { address, isConnected } = useAccount();
   const navigate = useNavigate(); // initialize useNavigate
+  const [Orders, setOrders] = useState([]);
+
 
   useEffect(() => {
     if (!isConnected || !address) {
@@ -35,29 +37,39 @@ const UserData = () => {
   }, [isConnected, address, navigate]);
 
 
- const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
+  const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
- useEffect(() => {
-  async function fetchData() {
+  useEffect(() => {
+    async function fetchData() {
       const [addressa] = await walletClient.getAddresses();
       try {
-          const getProducts = await publicClient.readContract({
-              account: addressa,
-              address: Commercecontract,
-              abi: CommerceABI,
-              functionName: 'getAllProducts',
-          });
+        const getProducts = await publicClient.readContract({
+          account: addressa,
+          address: Commercecontract,
+          abi: CommerceABI,
+          functionName: 'getAllProducts',
+        });
+        const getBuyerOrders = await publicClient.readContract({
+          account: addressa,
+          address: Commercecontract,
+          abi: CommerceABI,
+          functionName: 'getBuyerOrders',
+          args: [addressa]
+        });
 
-         
-         } catch (error) {
-          console.error(error);
+        setOrders(getBuyerOrders);
+
+        console.log(getBuyerOrders);
+
+      } catch (error) {
+        console.error(error);
       }
-  }
+    }
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
- // console.log(address);
+  // console.log(address);
 
   return (
     <div className="bg-cornsilk ">
@@ -76,6 +88,20 @@ const UserData = () => {
           <p>Total  </p>
           <div className="w-full bg-ash bg-opacity-40  Mix1 my-2 border px-4 py-6">
             <h4>Your Current Pending Orders</h4>
+
+            <div>
+              {Orders.map((product, index) => (
+                <div
+                  key={index}
+                  className="bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 cursor-pointer"
+                 >
+                  <h3 className="text-lg font-semibold">Buyer: {product.buyer == address? "You" : "Somethig May be Wrong"}</h3>
+                  <p className="text-gray-500 mb-2">productId: {product.productId.toString()}</p>
+                  <p className="text-gray-500">Completed: {product.state ? "Yes" : "No"}</p>
+                </div>
+              ))}
+
+            </div>
 
           </div>
         </div>

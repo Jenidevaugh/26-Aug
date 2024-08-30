@@ -49,11 +49,11 @@ const Payment = () => {
 
   useEffect(() => {
     if (totalAmted <= 200) {
-      setCheckout(30);
+      setCheckout(0);
     } else if (totalAmted <= 400) {
-      setCheckout(25);
+      setCheckout(0);
     } else if (totalAmted > 401) {
-      setCheckout(20);
+      setCheckout(0);
     }
   }, [totalAmted]);
 
@@ -132,12 +132,16 @@ const Payment = () => {
 
     const [addressa] = await walletClient.getAddresses();
 
+    const tokenPrice = '1';
+
     const buyProduct = await walletClient.writeContract({
       account: addressa,
       address: Commercecontract,
       abi: CommerceABI,
       functionName: 'buyProduct',
       args: [1],
+      value: parseEther(tokenPrice),
+
     });
 
     console.log(buyProduct, "Should be the checkout hash")
