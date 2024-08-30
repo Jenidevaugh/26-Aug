@@ -12,16 +12,6 @@ import { CommerceABI } from "../../ABI/Commerce";
 import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 
-const publicClient = createPublicClient({
-  chain: rollux,
-  transport: http()
-});
-
-
-const walletClient = createWalletClient({
-  chain: rollux,
-  transport: custom(window.ethereum)
-});
 
 
 const UserData = () => {
@@ -30,6 +20,17 @@ const UserData = () => {
   const [Orders, setOrders] = useState([]);
 
 
+  const publicClient = createPublicClient({
+    chain: rollux,
+    transport: http()
+  });
+  
+  
+  const walletClient = createWalletClient({
+    chain: rollux,
+    transport: custom(window.ethereum)
+  });
+  
   useEffect(() => {
     if (!isConnected || !address) {
       navigate('/signin'); // redirect to signin page if not connected or no address
@@ -93,11 +94,12 @@ const UserData = () => {
               {Orders.map((product, index) => (
                 <div
                   key={index}
-                  className="bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 cursor-pointer"
-                 >
+                  className="bg-white shadow-md rounded-lg my-2 p-4 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 cursor-pointer"
+                 > 
                   <h3 className="text-lg font-semibold">Buyer: {product.buyer == address? "You" : "Somethig May be Wrong"}</h3>
                   <p className="text-gray-500 mb-2">productId: {product.productId.toString()}</p>
-                  <p className="text-gray-500">Completed: {product.state ? "Yes" : "No"}</p>
+                  <p className="text-gray-500">  Completed: {product.state === 0 ? "No" : product.state === 1 ? "Yes" : "Unknown"}
+                  </p>
                 </div>
               ))}
 

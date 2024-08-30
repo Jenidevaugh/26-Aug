@@ -7,6 +7,15 @@ import { V2StakeERC20 } from "../../ABI/v2Stake";
 import { createWalletClient } from "viem";
 import ShopSideNav from "../../components/pageProps/shopPage/ShopSideNav";
 
+
+export const GetProducts = () => {
+  const [products, setProducts] = useState([]); // Initialize products as an empty array
+  const [productsCount, setProductsCount] = useState(); // Initialize products as an empty array
+  const [data, setData] = useState([]); // Initialize data state to null
+
+  const navigate = useNavigate(); // Hook for navigation
+
+  
 const publicClient = createPublicClient({
   chain: rollux,
   transport: http()
@@ -27,14 +36,6 @@ const formatUSD = (number) =>
     style: 'currency',
     currency: 'USD',
   }).format(number);
-
-
-export const GetProducts = () => {
-  const [products, setProducts] = useState([]); // Initialize products as an empty array
-  const [productsCount, setProductsCount] = useState(); // Initialize products as an empty array
-  const [data, setData] = useState([]); // Initialize data state to null
-
-  const navigate = useNavigate(); // Hook for navigation
 
   const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 

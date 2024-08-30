@@ -19,7 +19,7 @@ const SpecialCase = () => {
 
   return (
     <div className="fixed top-52 right-2 z-20  flex-col gap-2">
-      {!isConnected ? (<Link to="/userData">
+      {/* {!isConnected ? (<Link to="/userData">
         <div className="bg-ash w-16 h-[70px] rounded-md flex flex-col gap-1 text-white justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer">
           <div className="flex justify-center items-center">
             <MdSwitchAccount className="text-2xl -translate-x-12 group-hover:translate-x-3 transition-transform duration-500" />
@@ -28,8 +28,8 @@ const SpecialCase = () => {
           </div>
           <p className="text-xs font-semibold font-titleFont">Profile</p>
         </div>
-      </Link>) : (
-        <Link to="/signin">
+      </Link>) : (*/ } 
+       <Link to="/signin">
           <div className="bg-ash w-16 h-[70px] rounded-md flex flex-col gap-1 text-white justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer">
             <div className="flex justify-center items-center">
               <MdSwitchAccount className="text-2xl -translate-x-12 group-hover:translate-x-3 transition-transform duration-500" />
@@ -39,7 +39,7 @@ const SpecialCase = () => {
             <p className="text-xs font-semibold font-titleFont">Profile</p>
           </div>
         </Link>
-      )}
+     {/* )}*/}
       <br></br>
       <Link to="/cart">
         <div className="bg-ash w-16 h-[70px] rounded-md flex flex-col gap-1 text-white justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer relative">

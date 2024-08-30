@@ -20,6 +20,20 @@ import { rollux } from "viem/chains";
 import { http } from "viem";
 
 
+
+const AppProduct = () => {
+
+  const [productName, setProductName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [mintCap, setMintCap] = useState("");
+  const [cid, setCid] = useState("");
+  const { address, isConnected } = useAccount();
+  const [fileImport, setFileImport] = useState(null);
+  const history = useNavigate();
+
+  
 const JWT1 = "2QYNJR2bnKywCLw-rRbZEKUyogSutCTpDIUbiWIsPWeHyFEFjr1O2yPh7l43LhP8";
 const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJhMDk5NzQ5Ni00ZjQxLTQyZmMtOGNlMS0zOTcyOWQ0NWYzNDYiLCJlbWFpbCI6ImNocmlzdGlnaWFub0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMmRiZjRiMmM4OTIwNjAyMDYwMTciLCJzY29wZWRLZXlTZWNyZXQiOiJjMzE5M2U3Mjk0NzBmZGFjMGFlZGI0MjE4ZDlkMzA5OTBjMmNiYmE0NmM4Yjg4YTc0MWNlYTIzZGU0N2U0OWVlIiwiaWF0IjoxNzIzNzQxNDQ3fQ.pTE6Y4UR_ZBTwZu_xBqAI14krzMcz1joPPuXnsSw07M'
 
@@ -34,19 +48,6 @@ const walletClient = createWalletClient({
   chain: rollux,
   transport: custom(window.ethereum)
 });
-
-
-const AppProduct = () => {
-
-  const [productName, setProductName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [mintCap, setMintCap] = useState("");
-  const [cid, setCid] = useState("");
-  const { address, isConnected } = useAccount();
-  const [fileImport, setFileImport] = useState(null);
-  const history = useNavigate();
 
   const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 

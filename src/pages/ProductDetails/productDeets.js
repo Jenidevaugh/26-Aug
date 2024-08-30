@@ -13,6 +13,16 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/orebiSlice";
 
 
+const ProductDetails1 = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [prevLocation, setPrevLocation] = useState("");
+  const [productInfo, setProductInfo] = useState({});
+  const [products, setProducts] = useState([]);
+  const [productsCount, setProductsCount] = useState([]);
+  const dispatch = useDispatch();
+
+  
 const publicClient = createPublicClient({
   chain: rollux,
   transport: http(),
@@ -32,15 +42,6 @@ const formatUSD = (number) =>
   }).format(number);
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
-
-const ProductDetails1 = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [prevLocation, setPrevLocation] = useState("");
-  const [productInfo, setProductInfo] = useState({});
-  const [products, setProducts] = useState([]);
-  const [productsCount, setProductsCount] = useState([]);
-  const dispatch = useDispatch();
 
   //Get products and product images from pinata by IPFS
   useEffect(() => {

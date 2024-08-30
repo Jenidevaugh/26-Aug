@@ -17,6 +17,9 @@ import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 import PaymentDraweable from "./PaymentDrawer";
 
+const Payment = () => {
+
+  
 const publicClient = createPublicClient({
   chain: rollux,
   transport: http()
@@ -27,8 +30,6 @@ const walletClient = createWalletClient({
   chain: rollux,
   transport: custom(window.ethereum)
 });
-
-const Payment = () => {
 
   const products = useSelector((state) => state.orebiReducer.products);
 

@@ -22,11 +22,6 @@ import { estimateGas } from "viem/actions";
  import { privateKeyToAccount } from "viem/accounts";
 
 
-//COnnect Public client for viem
-const publicClient = createPublicClient({
-    chain: rollux,
-    transport: http('https://rpc.ankr.com/rollux')
-});
 
 
 
@@ -39,7 +34,12 @@ function PaymentDraweable() {
     const [wasConnected, setWasConnected] = useState(false);
     const productsCheck = useSelector((state) => state.orebiReducer.products);
 
-    
+    //COnnect Public client for viem
+const publicClient = createPublicClient({
+    chain: rollux,
+    transport: http('https://rpc.ankr.com/rollux')
+});
+
 
 const walletClient = createWalletClient({
     account: address,
