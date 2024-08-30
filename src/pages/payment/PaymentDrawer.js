@@ -15,7 +15,7 @@ import { http, custom } from "viem";
 import { rollux } from "viem/chains";
 import { useSelector } from "react-redux";
 import { hexToBigInt, bytesToBigInt } from "viem";
-import { ethers } from 'ethers';
+//import { ethers } from 'ethers';
 import { parseEther } from "viem";
 import { estimateGas } from "viem/actions";
 //import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
