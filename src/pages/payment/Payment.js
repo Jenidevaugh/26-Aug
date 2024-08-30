@@ -253,9 +253,9 @@ const walletClient = createWalletClient({
           <p className="py-2">Balance after point offset: ${[totalAmted.toLocaleString() - 200]}</p>
         </div>
 
-        <button onClick={handleTestCheckout} className="w-52 h-10 bg-blue text-white text-lg mt-4 hover:bg-black border rounded duration-300">
+          {/*  <button onClick={handleTestCheckout} className="w-52 h-10 bg-blue text-white text-lg mt-4 hover:bg-black border rounded duration-300">
           Pay Now
-        </button>
+        </button> */}
 
         <PaymentDraweable/>
       </div>
