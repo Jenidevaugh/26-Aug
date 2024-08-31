@@ -13,7 +13,7 @@ const MovableCart = () => {
                     <span className="absolute font-titleFont top-0 right-0 -mt-1 -mr-1 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
                         {products.length > 0 ? products.length : 0}
                     </span>
-                </div>
+                 </div>
             </Link>
         </div>
     );

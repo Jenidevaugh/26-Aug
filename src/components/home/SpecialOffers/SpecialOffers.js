@@ -92,7 +92,7 @@ const SpecialOffers = () => {
                 _id={product.id}
                 img={product.imageUrl}
                 productName={product.title}
-                price={product.price.toString()}
+                price={product.price.toString().slice(0, -18)}
                 color={product.color || "N/A"}
                 badge={product.badge || false}
                 des={product.description}
