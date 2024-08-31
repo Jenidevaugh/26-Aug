@@ -7,6 +7,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { FaCopy, FaFaucet, FaGamepad, FaInfo, FaPlay, FaShoppingCart } from "react-icons/fa";
 import { switchChain } from 'viem/actions';
+import { http } from 'viem';
+import { createPublicClient } from 'viem';
+import { fallback } from 'viem';
 
 const ConnectSwitch = () => {
   const [address, setAddress] = useState('');
@@ -14,8 +17,27 @@ const ConnectSwitch = () => {
   const [isSwitchingChain, setIsSwitchingChain] = useState(false);
   const [isChainIncluded, setIsChainIncluded] = useState(false);
 
-
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const publicClient = createPublicClient({
+    chain: rollux,
+    transport: fallback([
+      http('https://rpc.rollux.com'),
+      http('wss://rpc.rollux.com/wss'),
+      http('https://rpc.ankr.com/rollux')
+    ])
+  });
+
+  useEffect(() => {
+    checkWalletConnection();
+
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', handleChainChanged);
+      return () => {
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
+    }
+  }, []);
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -48,35 +70,36 @@ const ConnectSwitch = () => {
 
   const [isAddingChain, setIsAddingChain] = useState(false);
 
-  
+
   //Switch Networks
-  const switchToBSC = async ({id}) => {
+
+  const switchToBSC = async () => {
     try {
-
-      await walletClient.switchChain({ id: bsc.id })
-
+      await walletClient.switchChain({ id: bsc.id });
+      setCurrentChainId(bsc.id);
     } catch (error) {
-      console.error('Error switching to Rollux Mainnet:', error);
+      console.error('Error switching to BSC:', error);
     }
   };
-  const switchToRollux = async ({id}) => {
+
+  const switchToRollux = async () => {
     try {
-
-      await walletClient.switchChain({ id: rollux.id })
-
+      await walletClient.switchChain({ id: rollux.id });
+      setCurrentChainId(rollux.id);
     } catch (error) {
-      console.error('Error switching to Rollux Mainnet:', error);
+      console.error('Error switching to Rollux:', error);
     }
   };
-  const switchToSYS = async ({id}) => {
+
+  const switchToSYS = async () => {
     try {
-
-      await walletClient.switchChain({ id: syscoin.id })
-
+      await walletClient.switchChain({ id: syscoin.id });
+      setCurrentChainId(syscoin.id);
     } catch (error) {
-      console.error('Error switching to Rollux Mainnet:', error);
+      console.error('Error switching to Syscoin:', error);
     }
   };
+
 
 
   const SwitchChain = ({ id }) => {
@@ -92,7 +115,7 @@ const ConnectSwitch = () => {
 
     const addChain = async () => {
       try {
-        await walletClient.addChain({ chain: rollux });
+        await walletClient.addChain({ chain: rollux.id });
         setIsChainIncluded(true);
       } catch (error) {
         console.error('Error adding Syscoin Mainnet:', error);
@@ -100,8 +123,8 @@ const ConnectSwitch = () => {
     };
 
     return (
-      <div className='flex gap-2'>
-        {!isChainIncluded && !isAddingChain ? (
+      {/*  <div className='flex gap-2'>
+      {!isChainIncluded && !isAddingChain ? (
           <button className='bg-black text-white border p-1 rounded-lg' onClick={addChain}>
             Switch to Rollux
           </button>
@@ -112,7 +135,7 @@ const ConnectSwitch = () => {
         ) : (
           <p>Processing...</p>
         )}
-      </div>
+      </div> */}
     );
 
   };
@@ -167,10 +190,24 @@ const ConnectSwitch = () => {
 
   const formatAddress = (address) => {
     if (address) {
-      const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
+      const shortAddress = `${address.slice(0, 2)}...${address.slice(-4)}`;
       return shortAddress;
     }
     return '';
+  };
+
+
+  const getNetworkName = () => {
+    switch (currentChainId) {
+      case bsc.id:
+        return 'BSC';
+      case rollux.id:
+        return 'Rollux';
+      case syscoin.id:
+        return 'Syscoin';
+      default:
+        return 'Unknown Network';
+    }
   };
 
   return (
@@ -178,14 +215,14 @@ const ConnectSwitch = () => {
     <div>
       <div>
         {address ? (
-          <p> Address: {formatAddress(address)}  <br></br></p>
+          <p> Address: {formatAddress(address)}  <br/> Network: {getNetworkName()}</p>
 
         ) : (
           <div>
             <p >Connected Address: {formatAddress(address)}.</p>
             <p >{(address ? 'Please connect wallet ' : ' Please connect wallet')}</p>
-
-            {currentChainId !== rollux.id && <SwitchChain chainId={currentChainId} />}
+           
+ 
             {(!currentChainId || currentChainId === rollux.id) && (
               <button className='button' onClick={connectWallet} disabled={isSwitchingChain}>
                 {/*Connect Wallet*/}
@@ -203,7 +240,7 @@ const ConnectSwitch = () => {
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
         >
-          Swithch Chain
+          Switch Chain
         </Button>
         <Menu
           id="basic-menu"
@@ -214,20 +251,14 @@ const ConnectSwitch = () => {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem className='gap-1' onClick={handleClose}>Syscoin
-            <span onClick={switchToSYS}>
-            </span> <FaCopy />
-            {/*Connect Wallet*/}
+          <MenuItem className='gap-1' onClick={() => { handleClose(); switchToSYS(); }}>
+            Syscoin <FaCopy />
           </MenuItem>
-
-          <MenuItem className='gap-1' onClick={handleClose}>ROllux
-            <span onClick={switchToRollux}>
-            </span> <FaFaucet />
+          <MenuItem className='gap-1' onClick={() => { handleClose(); switchToRollux(); }}>
+            Rollux <FaFaucet />
           </MenuItem>
-
-          <MenuItem className='gap-1' onClick={handleClose}>BSC
-            <span onClick={switchToBSC}>
-            </span> <FaGamepad />
+          <MenuItem className='gap-1' onClick={() => { handleClose(); switchToBSC(); }}>
+            BSC <FaGamepad />
           </MenuItem>
         </Menu>
       </div>

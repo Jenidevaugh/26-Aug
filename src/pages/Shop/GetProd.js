@@ -18,14 +18,14 @@ export const GetProducts = () => {
   
 const publicClient = createPublicClient({
   chain: rollux,
-  transport: http()
+  transport: http('https://rpc.rollux.com')
 });
 
 
-const walletClient = createWalletClient({
-  chain: rollux,
-  transport: custom(window.ethereum)
-});
+//const walletClient = createWalletClient({
+//  chain: rollux,
+//  transport: custom(window.ethereum)
+//});
 
 
 const weiToEther = (wei) => wei / 1e18;
@@ -41,17 +41,17 @@ const formatUSD = (number) =>
 
   useEffect(() => {
     async function fetchData() {
-      const [addressa] = await walletClient.getAddresses();
+    //  const [addressa] = await walletClient.getAddresses();
       try {
         const getProducts = await publicClient.readContract({
-          account: addressa,
+        //  account: addressa,
           address: Commercecontract,
           abi: CommerceABI,
           functionName: 'getAllProducts',
         });
 
         const getProductsCount = await publicClient.readContract({
-          account: addressa,
+        //  account: addressa,
           address: Commercecontract,
           abi: CommerceABI,
           functionName: 'proxy',

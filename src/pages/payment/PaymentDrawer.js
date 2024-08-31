@@ -319,10 +319,11 @@ const walletClient = createWalletClient({
                     Confirmed transactions: <FaCheck color="green" /> <span className="flex gap-1 items-center">  {'1'} / <FaShoppingBag colorInterpolationFilters="RGB" /> {'5'} </span>
                 </div>
 
-
-                <button onClick={handleTestCheckoutMany} className="w-52 h-10 bg-blue mb-2 ml-2 text-white text-lg mt-4 hover:bg-black border rounded duration-300">
+ 
+                <button onClick={handleTestCheckoutMany} className="w-52 h-10 bg-blue mb-1 ml-1 text-white text-lg mt-4 hover:bg-black border rounded duration-300">
                     Pay Now
                 </button>
+ 
             </Drawer>
         </div>
     );

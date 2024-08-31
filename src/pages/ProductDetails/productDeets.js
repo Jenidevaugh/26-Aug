@@ -23,16 +23,13 @@ const ProductDetails1 = () => {
   const dispatch = useDispatch();
 
   
-const publicClient = createPublicClient({
-  chain: rollux,
-  transport: http(),
-});
-
-const walletClient = createWalletClient({
-  chain: rollux,
-  transport: custom(window.ethereum),
-});
-
+  const publicClient = createPublicClient({
+    chain: rollux,
+    transport: http('https://rpc.rollux.com'),
+  });
+  
+ 
+  
 const weiToEther = (wei) => wei / 1e18;
 
 const formatUSD = (number) =>
@@ -46,17 +43,18 @@ const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
   //Get products and product images from pinata by IPFS
   useEffect(() => {
     async function fetchData() {
-      const [address] = await walletClient.getAddresses();
+     
+     // const [address] = await walletClient.getAddresses();
       try {
         const getProducts = await publicClient.readContract({
-          account: address,
+         // account: address,
           address: Commercecontract,
           abi: CommerceABI,
           functionName: "getAllProducts",
         });
 
         const getProductsCount = await publicClient.readContract({
-          account: address,
+          //account: address,
           address: Commercecontract,
           abi: CommerceABI,
           functionName: "productCount",

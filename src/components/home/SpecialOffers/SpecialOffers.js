@@ -1,54 +1,105 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Heading from "../Products/Heading";
 import Product from "../Products/Product";
-import {
-  spfOne,
-  spfTwo,
-  spfThree,
-  spfFour,
-} from "../../../assets/images/index";
+import { useNavigate } from "react-router-dom";
+import { createPublicClient } from "viem";
+import { CommerceABI } from "../../../ABI/Commerce";
+import { rollux } from "viem/chains";
+import { http } from "viem";
+
+// Replace with actual contract address
+const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
+
+// Utility function to shuffle an array
+const shuffleArray = (array) => {
+  let shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 const SpecialOffers = () => {
+  const [products, setProducts] = useState([]); // Initialize products as an empty array
+  const [displayedProducts, setDisplayedProducts] = useState([]); // State for random products
+  const navigate = useNavigate();
+
+  const publicClient = createPublicClient({
+    chain: rollux,
+    transport: http('https://rpc.rollux.com'),
+  });
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const getProducts = await publicClient.readContract({
+          address: Commercecontract,
+          abi: CommerceABI,
+          functionName: 'getAllProducts',
+        });
+
+        // Fetch images for each product based on the IPFS CID
+        const productsWithImages = await Promise.all(
+          getProducts.map(async (product) => {
+            const options = {
+              method: 'GET',
+              headers: {
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2MWUzYThkOC05ZDk0LTRhZTUtYTRkOS1mYTFkYjJmZjE4MTUiLCJlbWFpbCI6ImplbmlkZXZhdWdobnF4bjg0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiIwODM1NGM5YzUzNDc0ZGRiNTYyNSIsInNjb3BlZEtleVNlY3JldCI6IjBiMTY1NDQwNGMxZDAwOTIzYmU3YzZjMDQzOTYwZGU3NzdmMDEyYmUwZGZjMjJiYjNiNDNmY2VmNDBhOTM3MjUiLCJleHAiOjE3NTU3NDg3NzV9.GTO6sKrnG9PmaCwIDXb1lwALHzwhBsqGk37mAHn21Uk',
+              },
+            };
+
+            const response = await fetch(`https://api.pinata.cloud/data/pinList?cid=${product.image}`, options);
+            const imageData = await response.json();
+            const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageData.rows[0].ipfs_pin_hash}`;
+
+            return {
+              ...product,
+              imageUrl,
+            };
+          })
+        );
+
+        // Shuffle products and select the first 4
+        const randomProducts = shuffleArray(productsWithImages).slice(0, 4);
+
+        setProducts(productsWithImages);
+        setDisplayedProducts(randomProducts);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const handleProductClick = (product) => {
+    navigate(`/product-details/${product.id}`, { state: { item: product } });
+  };
+
   return (
     <div className="w-full pb-20">
       <Heading heading="Special Offers" />
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
-        <Product
-          _id="1101"
-          img={spfOne}
-          productName="Cap for Boys"
-          price="35.00"
-          color="Blank and White"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1102"
-          img={spfTwo}
-          productName="Tea Table"
-          price="180.00"
-          color="Gray"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1103"
-          img={spfThree}
-          productName="Headphones"
-          price="25.00"
-          color="Mixed"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1104"
-          img={spfFour}
-          productName="Sun glasses"
-          price="220.00"
-          color="Black"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
+        {displayedProducts.map((product, index) => (
+          <div key={index} className="px-2">
+            <div
+              onClick={() => handleProductClick(product)}
+              className="cursor-pointer"
+              style={{ height: '400px' }} // Adjust height as needed
+            >
+              <Product
+                _id={product.id}
+                img={product.imageUrl}
+                productName={product.title}
+                price={product.price.toString()}
+                color={product.color || "N/A"}
+                badge={product.badge || false}
+                des={product.description}
+              />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
