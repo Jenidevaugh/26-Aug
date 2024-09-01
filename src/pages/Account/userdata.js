@@ -31,9 +31,13 @@ const UserData = () => {
     transport: custom(window.ethereum)
   });
   
+ 
   useEffect(() => {
     if (!isConnected || !address) {
-      navigate('/signin'); // redirect to signin page if not connected or no address
+      navigate('/userData'); // redirect to accounts page if not connected 
+    }  else {
+      // Redirect to /signin if not connected or no address
+      navigate('/signin');
     }
   }, [isConnected, address, navigate]);
 
