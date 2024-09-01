@@ -134,46 +134,47 @@ const ProductDetails1 = () => {
 
   return (
     <div className="w-full mx-auto border-b-[1px] border-b-gray-300">
-      <div className="max-w-container mx-auto px-4">
-        <div className="xl:-mt-10 -mt-7">
-          <Breadcrumbs title={productInfo.title} />
-        </div>
-        <div>
-          <img
-            src={productInfo.imageUrl}
-            alt={productInfo.title}
-            className="w-full h-58 object-cover rounded-t-lg mb-4"
-          />
-          <h3 className="text-lg font-semibold">{productInfo.title}</h3>
-          <p className="text-gray-600 mb-2">{productInfo.description}</p>
-          <p className="text-gray-800 font-bold mb-2">Price: {formattedPrice}</p>
-          <p className="text-gray-500 mb-2">Category: {productInfo.category}</p>
-          <p className="text-gray-500 mb-2">In Stock: {productInfo.MintCap}</p>
-          <p className="text-gray-500">Sold Out: {productInfo.isSold ? "Yes" : "No"}</p>
-        </div>
+    <div className="max-w-container mx-auto px-4">
+      <div className="xl:-mt-10 -mt-7">
+        <Breadcrumbs title={productInfo.title} />
       </div>
-      <hr />
-      <br />
-      <div className="flex justify-center">
-        {isWalletConnected ? (
-          <button
-            onClick={handleAddToCart}
-            className="w-11/12 py-4 px-2 bg-blue rounded-lg hover:bg-black duration-300 text-white text-lg font-titleFont"
-          >
-            Add to Cart
-          </button>
-        ) : (
-          <button
-            onClick={handleConnectWallet}
-            className="w-11/12 py-4 px-2 bg-blue rounded-lg hover:bg-black duration-300 text-white text-lg font-titleFont"
-          >
-            Connect
-          </button>
-        )}
+      <div>
+        <img
+          src={productInfo.imageUrl}
+          alt={productInfo.title}
+          className="w-full h-58 object-cover rounded-t-lg mb-4 xl:w-1/2 xl:mx-auto"
+        />
+        <h3 className="text-lg font-semibold">{productInfo.title}</h3>
+        <p className="text-gray-600 mb-2">{productInfo.description}</p>
+        <p className="text-gray-800 font-bold mb-2">Price: {formattedPrice}</p>
+        <p className="text-gray-500 mb-2">Category: {productInfo.category}</p>
+        <p className="text-gray-500 mb-2">In Stock: {productInfo.MintCap}</p>
+        <p className="text-gray-500">Sold Out: {productInfo.isSold ? "Yes" : "No"}</p>
       </div>
-      <br />
-      <br />
     </div>
+    <hr />
+    <br />
+    <div className="flex justify-center">
+      {isWalletConnected ? (
+        <button
+          onClick={handleAddToCart}
+          className="w-11/12 py-4 px-2 bg-blue rounded-lg hover:bg-black duration-300 text-white text-lg font-titleFont"
+        >
+          Add to Cart
+        </button>
+      ) : (
+        <button
+          onClick={handleConnectWallet}
+          className="w-11/12 py-4 px-2 bg-blue rounded-lg hover:bg-black duration-300 text-white text-lg font-titleFont"
+        >
+          Connect
+        </button>
+      )}
+    </div>
+    <br />
+    <br />
+  </div>
+  
   );
 };
 
