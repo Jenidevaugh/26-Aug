@@ -12,6 +12,7 @@ import { CommerceABI } from "../../ABI/Commerce";
 import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 
+const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
 
 const UserData = () => {
@@ -20,33 +21,33 @@ const UserData = () => {
   const [Orders, setOrders] = useState([]);
 
 
-  const publicClient = createPublicClient({
-    chain: rollux,
-    transport: http()
-  });
   
-  
-  const walletClient = createWalletClient({
-    chain: rollux,
-    transport: custom(window.ethereum)
-  });
-  
- 
   useEffect(() => {
     if (!isConnected || !address) {
-      navigate('/userData'); // redirect to accounts page if not connected 
+      navigate('/signin'); // redirect to accounts page if not connected 
     }  else {
       // Redirect to /signin if not connected or no address
-      navigate('/signin');
+      navigate('/userData');
     }
   }, [isConnected, address, navigate]);
 
 
-  const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
   useEffect(() => {
     async function fetchData() {
+
+      const publicClient = createPublicClient({
+        chain: rollux,
+        transport: http()
+      });
+          
+      const walletClient = createWalletClient({
+        chain: rollux,
+        transport: custom(window.ethereum)
+      });
+
       const [addressa] = await walletClient.getAddresses();
+
       try {
         const getProducts = await publicClient.readContract({
           account: addressa,

@@ -7,10 +7,15 @@ import { FaArrowAltCircleRight, FaInfo } from "react-icons/fa";
 import ProfileLog from "./ProfileLog";
 import Draweable from "./Draweable";
 import { GetProducts } from "../Shop/GetProd";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const SignIn = () => {
 
   const { address, isConnected } = useAccount();
+  const navigate = useNavigate();
+
+
 
   // console.log(address)
 
