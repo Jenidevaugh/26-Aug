@@ -24,6 +24,7 @@ const SpecialOffers = () => {
   const [products, setProducts] = useState([]); // Initialize products as an empty array
   const [displayedProducts, setDisplayedProducts] = useState([]); // State for random products
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // Add loading state
 
   const publicClient = createPublicClient({
     chain: rollux,
@@ -67,6 +68,8 @@ const SpecialOffers = () => {
         setDisplayedProducts(randomProducts);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched
       }
     }
 
@@ -80,7 +83,9 @@ const SpecialOffers = () => {
   return (
     <div className="w-full pb-20">
       <Heading heading="Special Offers" />
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
+      {loading ? ( // Conditionally render loading text
+        <div className="text-center py-4 my-7">Loading Special Offers...</div>
+      ) : (<div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
         {displayedProducts.map((product, index) => (
           <div key={index} className="px-2">
             <div
@@ -101,6 +106,7 @@ const SpecialOffers = () => {
           </div>
         ))}
       </div>
+       )}
     </div>
   );
 };

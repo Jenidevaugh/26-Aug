@@ -23,7 +23,8 @@ const NewArrivals = () => {
   const [products, setProducts] = useState([]); // Initialize products as an empty array
   const [productsCount, setProductsCount] = useState(); // Initialize products as an empty array
 const navigate = useNavigate()
-   
+const [loading, setLoading] = useState(true); // Add loading state
+
 const publicClient = createPublicClient({
   chain: rollux,
   transport: http('https://rpc.rollux.com')
@@ -80,6 +81,8 @@ const publicClient = createPublicClient({
         setProductsCount(getProductsCount);
       } catch (error) {
         console.error(error);
+      }  finally {
+        setLoading(false); // Set loading to false once data is fetched
       }
     }
 
@@ -130,27 +133,31 @@ const publicClient = createPublicClient({
   return (
     <div className="w-full pb-16">
       <Heading heading="New Arrivals" />
-      <Slider {...settings}>
-        {products.map((product, index) => (
-          <div key={index} className="px-2">
-            <div
-              onClick={() => handleProductClick(product)}
-              className="cursor-pointer"
-              style={{ height: '400px' }} // Adjust height as needed
-            >
-              <Product
-                _id={product.id}
-                img={product.imageUrl}
-                productName={product.title}
-                price={product.price.toString().slice(0, -18)}
-                color={product.color || "N/A"}
-                badge={product.badge || false}
-                des={product.description}
-              />
+      {loading ? ( // Conditionally render loading text
+        <div className="text-center py-4 my-7">Loading products...</div>
+      ) : (
+        <Slider {...settings}>
+          {products.map((product, index) => (
+            <div key={index} className="px-2">
+              <div
+                onClick={() => handleProductClick(product)}
+                className="cursor-pointer"
+                style={{ height: '400px' }}
+              >
+                <Product
+                  _id={product.id}
+                  img={product.imageUrl}
+                  productName={product.title}
+                  price={product.price.toString().slice(0, -18)}
+                  color={product.color || "N/A"}
+                  badge={product.badge || false}
+                  des={product.description}
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };
