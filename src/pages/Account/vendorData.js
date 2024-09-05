@@ -5,6 +5,18 @@ import FooterBottom from "../../components/home/Footer/FooterBottom";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { createPublicClient, createWalletClient } from "viem";
+import { CommerceABI } from "../../ABI/Commerce";
+import { rollux } from "viem/chains";
+import { custom, http } from "viem";
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
+import { FaArrowAltCircleRight, FaPlane, FaPlus } from "react-icons/fa";
+ 
+
+const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
+
+
 
 const VendorData = () => {
 
@@ -13,6 +25,66 @@ const VendorData = () => {
   const [category, setCategory] = useState(false);
   const [category1, setCategory1] = useState(false);
   const [banner, setBanner] = useState(false);
+  const [sortVendor, setSortVendor] = useState([]);
+  const [Orders, setOrders] = useState([]);
+  const { address, isConnected } = useAccount();
+
+
+
+
+  const [vendorProducts, setVendorProducts] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+
+      const publicClient = createPublicClient({
+        chain: rollux,
+        transport: http('https://rpc.rollux.com')
+      });
+
+      const walletClient = createWalletClient({
+        chain: rollux,
+        transport: custom(window.ethereum)
+      });
+
+      const [addressa] = await walletClient.getAddresses();
+
+      try {
+        const getProducts = await publicClient.readContract({
+          account: addressa,
+          address: Commercecontract,
+          abi: CommerceABI,
+          functionName: 'getAllProducts',
+        });
+
+        const getBuyerOrders = await publicClient.readContract({
+          account: addressa,
+          address: Commercecontract,
+          abi: CommerceABI,
+          functionName: 'getBuyerOrders',
+          args: [addressa]
+        });
+
+        //  console.log('Products response:', getBuyerOrders);
+
+        setSortVendor(getProducts);
+
+        setOrders(getBuyerOrders);
+
+        const vendorProductsList = getProducts.filter(product => product.owner.toLowerCase() === address.toLowerCase());
+        setVendorProducts(vendorProductsList);
+
+       
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  console.log(vendorProducts, 'vendor')
+  console.log(address)
 
   return (
     <div className="w-full mx-auto">
@@ -43,7 +115,11 @@ const VendorData = () => {
         <p> Total listed {5}</p>
 
         <div className="w-full bg-ash my-2 border px-4 py-6 mr-2 ">
-          <p> Click to view </p>
+          <span>
+            <Link to={"/products"}>
+              <p>Click to view </p>
+            </Link>
+          </span>
 
           <div className="mt-4 py-4">
             <Banner />
@@ -52,26 +128,26 @@ const VendorData = () => {
         </div>
       </div>
 
-      <div className="w-full bg-black bg-opacity-80 mx-auto border px-4 py-6 mr-2 ">
-        <div className="p-4 border rounnded-20">
-       <p>Add NEw Product </p>
-
-        <Link Link to="/addProducts">
-          <button className="w-90% border rounded-[10px] py-2  bg-blue hover:bg-black  duration-300 text-white text-lg font-titleFont b-20 my-5">
-            <span className="mr-5  bg-blue hover:bg-black "></span> Add product <span className="mr-5"></span>
-          </button>
-        </Link>
-
-        </div>
-      </div>
 
       <br></br>
 
-      <div className="w-full bg-ash mx-auto border px-4 py-6 mr-2 ">
-        <h4>You have a of {200} Total Products Listed  - <span className="text-italics hover:pointer-cusor">click to view</span></h4>
+      <div className="w-90 mx-auto border-4 border-blue-500 rounded-lg px-4 py-6 mx-4">
+        <div className="flex justify-between items-center p-4 border rounded-lg bg-white shadow-md">
+          <h4 className="text-base">
+            You have a total of {vendorProducts.length} Products Listed -
+            <Link to={"/products"}>
+            <span className="inline-flex gap-2 items-center border border-black-500 bg-blue text-white rounded-full py-1 px-4 ml-2 hover:bg-red-600 transition-colors duration-300 cursor-pointer">
+            <FaArrowAltCircleRight/>  click to view</span>
+            </Link>
+          </h4>
 
+          <Link to="/addProducts" className="flex items-center bg-blue-500 hover:bg-blue-700 text-red py-2 px-4 rounded-lg transition-colors duration-300">
+          <span className="inline-flex gap-2 items-center border border-black-500 bg-blue text-white rounded-full py-1 px-4 ml-2 hover:bg-red-600 transition-colors duration-300 cursor-pointer">
+          Add Product<FaPlus size={20}/></span>
+          </Link>
+        </div>
         <span className="w-full">
-          <div className="w-full bg-ash my-2 border px-4 py-6 mr-2 ">
+          <div className="w-full  my-2 border px-4 py-6 mr-2 ">
             <h4>Recent Orders Placed in last 7 days </h4>
 
             <div className="mt-4 py-4">
@@ -106,7 +182,7 @@ const VendorData = () => {
 
       </div> <br></br>
       <div className="w-full bg-ash mx-auto border px-4 py-6 mr-2 ">
-        <h4>Total Products Listed {200} - <span className="text-italics hover:pointer-cusor">click to view</span></h4>
+        <h4>Total Products Listed {vendorProducts.length}  <span className="inline-flex items-center border border-black-500 bg-blue text-white rounded-full py-1 px-4 ml-2 hover:bg-red-600 transition-colors duration-300 cursor-pointer ">click to view</span></h4>
 
         <span className="w-full">
           <div className="w-full bg-ash my-2 border px-4 py-6 mr-2 ">

@@ -165,9 +165,9 @@ const ProductDetails1 = () => {
       ) : (
         <button
           onClick={handleConnectWallet}
-          className="w-11/12 py-4 px-2 bg-blue rounded-lg hover:bg-black duration-300 text-white text-lg font-titleFont"
+          className="w-11/12 xl:w-1/2 py-4 px-2 bg-blue rounded-lg hover:bg-black duration-300 text-white text-lg font-titleFont"
         >
-          Connect
+          Connect 
         </button>
       )}
     </div>

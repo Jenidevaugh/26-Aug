@@ -31,6 +31,7 @@ import Tasks from "./Play/Componentss/Tasks";
 import Leaderboard from "./Play/Componentss/Leaderboard";
 import GetProducts from "./pages/Shop/GetProd";
 import ProductDetails1 from "./pages/ProductDetails/productDeets";
+import Products from "./pages/Account/Products";
   
 
 
@@ -71,6 +72,7 @@ const router = createBrowserRouter(
        <Route path="/signin" element={<SignIn />}></Route>
       <Route path="/userData" element={<UserData />}></Route>
       <Route path="/vendorData" element={<VendorData />}></Route>
+      <Route path="/products" element={<Products />}></Route>
       <Route path="/addProducts" element={<AppProduct />}></Route>
 
     </Route>

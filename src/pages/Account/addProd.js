@@ -239,6 +239,7 @@ const walletClient = createWalletClient({
               <Input
                 className="w-70"
                 value={price}
+                type="number"
                 onChange={(e) => setPrice(e.target.value)}
               />
 

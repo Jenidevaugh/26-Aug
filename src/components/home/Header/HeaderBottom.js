@@ -7,6 +7,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
 import { useAccount } from 'wagmi';
+import { createPublicClient, createWalletClient } from "viem";
+import { rollux } from "viem/chains";
+import { http, custom } from "viem";
+import { CommerceABI } from "../../../ABI/Commerce";
+
+
+const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -14,10 +21,11 @@ const HeaderBottom = () => {
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
+  const [Orders, setOrders] = useState([]);
 
   const address1 = useAccount();
- 
- //console.log(address1.address);
+
+  //console.log(address1.address);
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
@@ -43,6 +51,43 @@ const HeaderBottom = () => {
     );
     setFilteredProducts(filtered);
   }, [searchQuery]);
+
+
+  useEffect(() => {
+    async function fetchData() {
+
+      const publicClient = createPublicClient({
+        chain: rollux,
+        transport: http('https://rpc.rollux.com')
+      });
+
+      const walletClient = createWalletClient({
+        chain: rollux,
+        transport: custom(window.ethereum)
+      });
+
+      const [addressa] = await walletClient.getAddresses();
+
+      try {
+           const getProducts = await publicClient.readContract({
+             account: addressa,
+             address: Commercecontract,
+             abi: CommerceABI,
+             functionName: 'getAllProducts',
+           });
+      
+
+
+        setOrders(getProducts);
+              console.log('Products response:', getProducts);
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
@@ -169,13 +214,13 @@ const HeaderBottom = () => {
                         Sign Up
                       </li>
                     </Link>
-                   
-                   
+
+
                   </>
                 )}
               </motion.ul>
             )}
-           {/* <Link to="/cart">
+            {/* <Link to="/cart">
               <div className="relative">
                 <FaShoppingCart />
                 <span className="absolute font-titleFont top-3 -right-2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
