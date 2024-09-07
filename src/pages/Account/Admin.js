@@ -4,10 +4,12 @@ const Admin = () => {
 
 
     return (
-        <>
-        <h2>Admin </h2>
+        <div>
 
-        </>
+            <h2>Admin </h2>
+
+        </div>
+
     )
 }
 

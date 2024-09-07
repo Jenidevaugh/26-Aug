@@ -1,5 +1,5 @@
 import playIMG from "./imageee.png";
-
+import { useDisconnect, } from "wagmi";
 import "./user.css";
 import { createClient } from "@supabase/supabase-js";
 import { toast, ToastContainer } from "react-toastify";
@@ -18,11 +18,11 @@ import { CommerceABI } from "../../ABI/Commerce";
 import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 import { FaAccessibleIcon } from "react-icons/fa";
-import { SYSLERC20 } from "../../ABI/SYSLERC20";
 import { SevenDaysstakingContractAddressRollux, SYSLERC20Token } from "../../constants/Addresses";
 import { StakeERC20 } from "../../ABI/stakingERC20";
 import { BigNumber } from "ethers";
 import StakeBAr from "./StakeBar";
+import { SYSLERC20 } from "../../ABI/SyslERC20";
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 const SYSLERC = "0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9";
@@ -38,10 +38,10 @@ const UserData = () => {
   const [sortVendor, setSortVendor] = useState([]);
   const [Orders, setOrders] = useState([]);
   const [TokenBal, setTokenBal] = useState('');
-  const { address, isConnected } = useAccount();
-
   const [data, setData] = useState(null);
 
+  const { disconnect } = useDisconnect();
+  const { address, isConnected } = useAccount();
 
   useEffect(() => {
     if (!isConnected || !address) {
@@ -506,12 +506,34 @@ const UserData = () => {
     <div className="bg-white ">
       <Header />
 
-      <div>
+      {/*  <div>
         <div className="bg-blue bg-opacity-40 w-full mx-auto my-5 border px-4 py-6">
           <div>
             <ProfileLog />
           </div>
-        </div></div>
+        </div>
+        </div>*/}
+
+      <div>
+        <div className="w-full mt-4 flex gap-4rounded-lg py-2 px-2 bg-blue">
+          {address && isConnected && (
+            <>
+              <p className="text-base text-white mt-2">
+                Wallet connected: {address.slice(0, 5)} <br />
+              </p>
+              <button className="my-2 mx-2 py-2 p-2 bg-black hover:bg-black duration-300 text-white " onClick={disconnect} type="button">
+                Disconnect Wallet
+              </button>
+            </>
+          )}
+          {!address && (
+            <p>NUll</p>
+          )}
+        </div>
+
+      </div>
+
+
       <div className="flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
 
 
@@ -575,6 +597,7 @@ const UserData = () => {
 
               <h4 className="text-lg font-semibold">🏆Your Current Stake position</h4>
               <p>Your Total staked {Number(data.getUser.stakeAmount.toString().slice(0, -18)).toLocaleString()} SYSL</p>
+              <p>Rewards Claimed {Number(data.getUser.rewardsClaimedSoFar.toString().slice(0, -18)).toLocaleString()} SYSL</p>
               <h5> Status: {data.stakeStatusMessage} </h5>
 
             </div>
@@ -589,17 +612,8 @@ const UserData = () => {
               />
               <button className="w-full border my-2 py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont rounded" onClick={approve} disabled={data.stakeStatusMessage === "Stake has ended" || claimingSTake}> {claimingSTake ? 'Approving...' : 'Stake'}</button>
 
-              <p>Your Current rewards earned {data.rewards.toLocaleString().slice(0, -24)}</p>
+              <p>Your Current rewards earned {Number(data.rewards.toString().slice(0, -18)).toLocaleString()}</p>
               <button className="w-full border my-2 py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont rounded" onClick={handleClaimReward}>  {claiming ? 'Claiming...' : 'Claim Reward'}</button>
-
-              <button
-                className={`w-full border my-2 py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont rounded ${data.getUser.rewardAmount === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                onClick={handleClaimReward}
-                disabled={data.getUser.rewardAmount === 0 || claiming}
-              >
-                {claiming ? 'Claiming...' : 'Claim Reward'}
-              </button>
-
               <button className="w-full border my-2 py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont rounded" onClick={handleUnStake}>  {claimingUnSTake ? 'Unstaking...' : 'Unstake'}</button>
 
             </div>
@@ -615,25 +629,25 @@ const UserData = () => {
       {/*<StakeBAr/>*/}
 
 
-      
+
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between w-full bg-blue my-2 border px-4 py-6">
-      {/* Content Section */}
-      <div className="lg:w-2/3">
-        <h4>Play the Shop to earn game</h4>
-        <p>
-          Your Current points earned <span className="text-reddy">{wholeNumberPoints}</span> Points
-        </p>
-        <Link to="/play">
-          <button className="w-40 rounded border py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont b-20 my-5">
-            <span className="mr-5"></span> Play <span className="mr-5"></span>
-          </button>
-        </Link>
+        {/* Content Section */}
+        <div className="lg:w-2/3">
+          <h4>Play the Shop to earn game</h4>
+          <p>
+            Your Current points earned <span className="text-reddy">{wholeNumberPoints}</span> Points
+          </p>
+          <Link to="/play">
+            <button className="w-40 rounded border py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont b-20 my-5">
+              <span className="mr-5"></span> Play <span className="mr-5"></span>
+            </button>
+          </Link>
+        </div>
+        {/* Image Section */}
+        <div className="lg:w-1/3 lg:ml-4 flex justify-center">
+          <img src={playIMG} alt="Play" className="w-40 object-fit" />
+        </div>
       </div>
-      {/* Image Section */}
-      <div className="lg:w-1/3 lg:ml-4 flex justify-center">
-        <img src={playIMG} alt="Play" className="w-40 object-fit" />
-      </div>
-    </div>
       <div>
 
         <div className="mx-auto border px-4 py-6 mr-2">
