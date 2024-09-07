@@ -19,8 +19,7 @@ import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 import { FaAccessibleIcon } from "react-icons/fa";
 import { StakeERC20 } from "../../ABI/stakingERC20";
-import { BigNumber } from "ethers";
-//import StakeBAr from "./StakeBar";
+//import { BigNumber } from "ethers";
 import { SYSLERC20 } from "../../ABI/SyslERC20";
 
 const SevenDaysstakingContractAddressRollux = "0xcd8b4E33eFa30124676510E03eFFa657db5ee5D3";
@@ -623,11 +622,6 @@ const UserData = () => {
           <p className="text-center">Loading Stake info, Please wait</p>
         </div>
       )}
-
-
-      {/*<StakeBAr/>*/}
-
-
 
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between w-full bg-blue my-2 border px-4 py-6">
         {/* Content Section */}
