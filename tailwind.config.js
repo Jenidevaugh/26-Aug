@@ -26,7 +26,11 @@ module.exports = {
         black: "#262626",
         ash: "#879",
         blue:"#0e76fd",
+        RoyalBlue: "#9ad2ce",
+        CornflowerBlue: "#6495ED",
         deepb:"#14067c",
+        DarkSlateBlue: "#483D8B",
+
         reddy:"#ff0202",
         cornsilk:"#fff8dc",
         gradienMix1: "linear-gradient(from-red-500 to-green-200)",
