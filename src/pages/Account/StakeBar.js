@@ -8,12 +8,14 @@ import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 import { FaAccessibleIcon } from "react-icons/fa";
 import { SYSLERC20 } from "../../ABI/SyslERC20";
-import { SevenDaysstakingContractAddressRollux, SYSLERC20Token } from "../../constants/Addresses";
 import { StakeERC20 } from "../../ABI/stakingERC20";
 import { BigNumber } from "ethers";
  
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 const SYSLERC = "0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9";
+
+const SevenDaysstakingContractAddressRollux = "0xcd8b4E33eFa30124676510E03eFFa657db5ee5D3";
+const SYSLERC20Token = "0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9";
 const contract = SevenDaysstakingContractAddressRollux;
 
 
@@ -89,7 +91,7 @@ const StakeBAr = () => {
     
             const earlyUnstakeFee = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getEarlyUnstakeFeePercentage',
             });
@@ -98,7 +100,7 @@ const StakeBAr = () => {
     
             const getMinimumStakingAmount = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getMinimumStakingAmount',
             });
@@ -114,7 +116,7 @@ const StakeBAr = () => {
             //GET TOTAL STAKED TOKENS
             const getTotalStakedTokens = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getTotalStakedTokens',
     
@@ -125,25 +127,23 @@ const StakeBAr = () => {
             //GET TOTAL STAKER
             const getTotalUsers = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getTotalUsers',
     
-            });
-    
-    
+            }); 
     
             //GET MINIMUM STAKING AMOUNT
             const getMaxStakingTokenLimit = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getMaxStakingTokenLimit',
     
             });
             const getUser = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getUser',
               args: [addressa],
@@ -153,7 +153,7 @@ const StakeBAr = () => {
     
             const getStakeDays = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getStakeDays',
     
@@ -170,7 +170,7 @@ const StakeBAr = () => {
     
             const getUserEstimatedRewards = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getUserEstimatedRewards',
             });
@@ -182,14 +182,14 @@ const StakeBAr = () => {
     
             const stakeEndDate_ = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getStakeEndDate',
             });
     
             const getAPY = await publicClient.readContract({
               account: addressa,
-              address: contract,
+              address: SevenDaysstakingContractAddressRollux,
               abi: StakeERC20,
               functionName: 'getAPY',
             });

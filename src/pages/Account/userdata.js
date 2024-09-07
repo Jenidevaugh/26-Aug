@@ -18,15 +18,16 @@ import { CommerceABI } from "../../ABI/Commerce";
 import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 import { FaAccessibleIcon } from "react-icons/fa";
-import { SevenDaysstakingContractAddressRollux, SYSLERC20Token } from "../../constants/Addresses";
 import { StakeERC20 } from "../../ABI/stakingERC20";
 import { BigNumber } from "ethers";
 import StakeBAr from "./StakeBar";
 import { SYSLERC20 } from "../../ABI/SyslERC20";
 
+const SevenDaysstakingContractAddressRollux = "0xcd8b4E33eFa30124676510E03eFFa657db5ee5D3";
+const SYSLERC20Token = "0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9";
+
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 const SYSLERC = "0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9";
-const contract = SevenDaysstakingContractAddressRollux;
 const supabaseUrl = "https://fofimcnyyiryquyxyaki.supabase.co"
 const supabaseKey1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvZmltY255eWlyeXF1eXh5YWtpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcyMTUzOTUwNiwiZXhwIjoyMDM3MTE1NTA2fQ.oIAUWKmNhSuVq03fXaT_Y4MfWukaUKC9SkF7UjxJNJE"
 
@@ -39,6 +40,7 @@ const UserData = () => {
   const [Orders, setOrders] = useState([]);
   const [TokenBal, setTokenBal] = useState('');
   const [data, setData] = useState(null);
+  const contract = SevenDaysstakingContractAddressRollux;
 
   const { disconnect } = useDisconnect();
   const { address, isConnected } = useAccount();
@@ -52,16 +54,13 @@ const UserData = () => {
     }
   }, [isConnected, address, navigate]);
 
-
-
   const walletClient = createWalletClient({
     chain: rollux,
     transport: custom(window.ethereum)
   });
 
-
-
   const [vendorProducts, setVendorProducts] = useState([]);
+
   useEffect(() => {
     async function fetchData() {
       const publicClient = createPublicClient({
@@ -105,13 +104,13 @@ const UserData = () => {
         setTokenBal(balanceOf.toString().slice(0, -18).toLocaleString());
 
         const earlyUnstakeFee = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getEarlyUnstakeFeePercentage',
         });
 
         const getMinimumStakingAmount = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getMinimumStakingAmount',
         });
@@ -120,32 +119,32 @@ const UserData = () => {
         const multipliedValue = feeValue / 100;
 
         const getTotalStakedTokens = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getTotalStakedTokens',
         });
 
         const getTotalUsers = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getTotalUsers',
         });
 
         const getMaxStakingTokenLimit = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getMaxStakingTokenLimit',
         });
 
         const getUser = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getUser',
           args: [addressa],
         });
 
         const getStakeDays = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getStakeDays',
         });
@@ -154,7 +153,7 @@ const UserData = () => {
         const days = daysInSeconds / (24 * 60 * 60);
 
         const getUserEstimatedRewards = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getUserEstimatedRewards',
         });
@@ -162,13 +161,13 @@ const UserData = () => {
         const rewards = Number(getUserEstimatedRewards);
 
         const stakeEndDate_ = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getStakeEndDate',
         });
 
         const getAPY = await publicClient.readContract({
-          address: contract,
+          address: SevenDaysstakingContractAddressRollux,
           abi: StakeERC20,
           functionName: 'getAPY',
         });
@@ -279,7 +278,7 @@ const UserData = () => {
       address: SYSLERC20Token,
       abi: SYSLERC20,
       functionName: 'allowance',
-      args: [addressa1, contract],
+      args: [addressa1, SYSLERC20Token],
     });
 
     // console.log(checkApprove);
