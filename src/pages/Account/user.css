@@ -1,0 +1,12 @@
+
+.gradient-background {
+    background: linear-gradient(135deg, rgba(100, 149, 237, 0.4) 25%, rgba(255, 255, 255, 0.4) 25%, rgba(255, 255, 255, 0.4) 50%, rgba(100, 149, 237, 0.4) 50%, rgba(100, 149, 237, 0.4) 75%, rgba(255, 255, 255, 0.4) 75%, rgba(255, 255, 255, 0.4));
+    background-size: 40px 40px;
+  }
+
+  .pattern-background {
+    
+    background: url('./logo192.png') ;
+    background-color: rgba(100, 149, 237, 0.4); /* CornflowerBlue with opacity */
+  }
+  

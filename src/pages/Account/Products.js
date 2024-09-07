@@ -75,7 +75,7 @@ const Products = () => {
         setVendorProducts(vendorProductsList);
 
 
-        //   console.log('Products response:', productPromises);
+// console.log('Products response:', vendorProductsList);
         // Fetch images for each product based on the IPFS CID
         const productsWithImages = await Promise.all(
           getProducts.map(async (product) => {
@@ -113,7 +113,7 @@ const Products = () => {
   }, []);
   console.log('Products response:', products);
 
-  console.log(vendorProducts, 'vendor')
+  console.log(Orders, 'vendor')
   //console.log(address)
 
   return (
