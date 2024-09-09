@@ -52,7 +52,7 @@ const Layout = () => {
 };
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route errorElement = {<ErrorPage/>} >
+    <Route>
       <Route path="/" element={<Layout />} >
         {/* ==================== Header Navlink Start here =================== */}
         <Route index element={<Home />}></Route>
