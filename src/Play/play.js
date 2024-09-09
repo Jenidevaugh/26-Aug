@@ -9,12 +9,15 @@ import ConnectAddress from "./connectAddress.js";
 import { FaCopy, FaFaucet, FaGamepad, FaInfo, FaPlay, FaShoppingCart } from "react-icons/fa";
 import { useAccount } from "wagmi";
 import { Slider } from "@mui/material";
-import { useSendTransaction } from "wagmi";
-import { parseEther } from "viem";
+import { hexToBigInt, parseEther } from "viem";
 import supabase from "./supaase.js";
 import { Bounce, toast, ToastContainer } from 'react-toastify'; // Optional: For toast notifications
 import 'react-toastify/dist/ReactToastify.css';
 import SimpleBottomNavigation from "./Componentss/Navigate";
+import { useSendTransaction } from 'wagmi';
+import { createWalletClient } from "viem";
+import { mainnet, rollux } from "viem/chains";
+import { custom, } from "viem";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -46,7 +49,6 @@ const foods = getData();
 
 
 
-
 function PlayApp() {
   const foods = getData();
   // const [isRecent, setIsRecent] = useState(false); // State to check if entry is recent
@@ -70,6 +72,51 @@ function PlayApp() {
 
   const date = Date.now();
 
+  // A function to sign and send a transaction
+  const SignAndSendTransaction = async (transaction) => {
+
+    const walletClient = createWalletClient({
+      chain: mainnet,
+      transport: custom(window.ethereum),
+    })
+    try {
+
+      const hash = await walletClient.sendTransaction({
+        address,
+        to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+        value: 1000000000000000000n
+      })
+      return hash; // Transaction hash or result
+    } catch (error) {
+      console.error('Transaction signing failed:', error);
+      throw error;
+    }
+  };
+
+  const handleCheckout1 = async () => {
+    if (cartItems.length < 4) {
+      setError('You need to add at least 4 products to checkout.');
+      return;
+    }
+
+    try {
+      const transaction = {
+        to: '0x69d8a5e104fbf6ccb8f4f71b32a8810526d2f25c',
+        value: parseEther(`${slideAMA}`),
+      };
+
+      // Sign and send the transaction
+      const txResult = await SignAndSendTransaction(transaction);
+
+      if (txResult) {
+        console.log('Transaction successful:', txResult);
+        // Only call AddDAta after successful transaction
+        await AddDAta();
+      }
+    } catch (error) {
+      console.error('Transaction or Firestore operation failed:', error);
+    }
+  };
 
   async function GetCountries() {
 
@@ -321,7 +368,7 @@ function PlayApp() {
         setPointsDb(0); // Set to 0 if no data found
       }
 
-      console.log(Gameplay);
+     // console.log(Gameplay);
     } catch (error) {
       //  console.error(error);
     }
@@ -429,16 +476,33 @@ function PlayApp() {
 
 
 
+  // Handle checkout process
   const handleCheckout = async () => {
-    try {
-      const send = await sendTransaction({
-        to: '0x69d8a5e104fbf6ccb8f4f71b32a8810526d2f25c',
-        value: parseEther(`${slideAMA}`),
-      });
+    if (cartItems.length < 4) {
+      setError('You need to add at least 4 products to checkout.');
+      return;
+    }
 
-      console.log('This is hash? ');
-      if (!send) {
-        AddDAta();
+    const walletClient = createWalletClient({
+      chain: rollux,
+      transport: custom(window.ethereum),
+    })
+
+    const slideAMAValue = parseEther(slideAMA.toString());
+    console.log(slideAMAValue);
+
+    try {
+
+      const hash = await walletClient.sendTransaction({
+        account: address,
+        to: '0x9E7Ad69C9fF3682eD1391fa7B8fed11A0f8BE292',
+        value: (slideAMAValue),
+      })
+
+      if (hash) {
+        console.log('Transaction successful:', hash);
+        // Only call AddDAta after successful transaction
+        await AddDAta();
       }
     } catch (error) {
       console.error('Transaction or Firestore operation failed:', error);
@@ -525,7 +589,7 @@ function PlayApp() {
 
                 <p>Your Boosted points {newTotal.toLocaleString()}</p>
 
-                <button className="px-2 py-2 rounded-lg bg-black hover:bg-blue duration-500" onClick={AddDAta}
+                <button className="px-2 py-2 rounded-lg bg-black hover:bg-blue duration-500" onClick={handleCheckout}
                   disabled={!isConnected || !address}>
                   Save
                 </button>
@@ -594,13 +658,13 @@ function PlayApp() {
           </div>
         </div>
 
-       
+
       </div>
 
       <div className="flex w-full h-fit bg-white sticky bottom-0 z-50 w-full justify-center">
-          <SimpleBottomNavigation />
+        <SimpleBottomNavigation />
 
-        </div>
+      </div>
     </>
   );
 }
