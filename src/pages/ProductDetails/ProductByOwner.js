@@ -30,7 +30,7 @@ const ProductsByOwner = () => {
         chain: rollux,
         transport: http('https://rpc.rollux.com'),
       });
-      
+
       try {
         const getProducts = await publicClient.readContract({
           address: Commercecontract,
@@ -40,10 +40,10 @@ const ProductsByOwner = () => {
 
         // Filter products by owner address
         const filteredProducts = getProducts.filter(
-          (product) => product.owner.toLowerCase() === vendorAddress1.toLowerCase()
+          (product) => product.owner.toLowerCase() === ownerAddress.toLowerCase()
         );
 
-        const vendorProductsList = getProducts.filter(product => product.owner === vendorAddress1);
+        const vendorProductsList = getProducts.filter(product => product.owner === ownerAddress);
        setVendorProducts(filteredProducts);
 
 
