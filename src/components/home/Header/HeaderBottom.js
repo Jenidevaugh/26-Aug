@@ -26,16 +26,23 @@ const HeaderBottom = () => {
   const address1 = useAccount();
 
   //console.log(address1.address);
-
   useEffect(() => {
-    document.body.addEventListener("click", (e) => {
-      if (ref.current.contains(e.target)) {
-        setShow(true);
-      } else {
+    const handleClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
         setShow(false);
+      } else {
+        setShow(true);
       }
-    });
+    };
+  
+    document.body.addEventListener("click", handleClick);
+  
+    // Clean up the event listener on component unmount
+    return () => {
+      document.body.removeEventListener("click", handleClick);
+    };
   }, [show, ref]);
+  
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -61,16 +68,10 @@ const HeaderBottom = () => {
         transport: http('https://rpc.rollux.com')
       });
 
-        const walletClient = createWalletClient({
-        chain: rollux,
-        transport: custom(window.ethereum)
-      });
-  
-      const [addressa] = await walletClient.getAddresses();
-
+    
       try {
            const getProducts = await publicClient.readContract({
-             account: addressa,
+             //account: addressa,
              address: Commercecontract,
              abi: CommerceABI,
              functionName: 'getAllProducts',
