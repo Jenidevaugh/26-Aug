@@ -25,6 +25,12 @@ const ProductsByOwner = () => {
 
   useEffect(() => {
     async function fetchProducts() {
+
+      const publicClient = createPublicClient({
+        chain: rollux,
+        transport: http('https://rpc.rollux.com'),
+      });
+      
       try {
         const getProducts = await publicClient.readContract({
           address: Commercecontract,

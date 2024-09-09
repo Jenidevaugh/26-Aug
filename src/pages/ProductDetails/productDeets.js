@@ -22,10 +22,7 @@ const ProductDetails1 = () => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const dispatch = useDispatch();
 
-  const publicClient = createPublicClient({
-    chain: rollux,
-    transport: http('https://rpc.rollux.com'),
-  });
+  
 
   const weiToEther = (wei) => wei / 1e18;
 
@@ -56,6 +53,11 @@ const ProductDetails1 = () => {
     checkWalletConnection();
 
     async function fetchData() {
+      const publicClient = createPublicClient({
+        chain: rollux,
+        transport: http('https://rpc.rollux.com'),
+      });
+
       try {
         const getProducts = await publicClient.readContract({
           address: Commercecontract,
