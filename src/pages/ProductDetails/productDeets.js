@@ -10,7 +10,7 @@ import { rollux } from "viem/chains";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/orebiSlice";
 import { FaInfo } from "react-icons/fa";
- 
+ import { setVendorAddress } from "../../redux/orebiSlice";
 
 const ProductDetails1 = () => {
   const location = useLocation();
@@ -155,7 +155,7 @@ const ProductDetails1 = () => {
               
          <p className="text-gray-500 mt-2">
             Vendor Address: 
-            <Link to={`/products-by-owner/${productInfo.owner}`} className="text-blue hover:underline">
+            <Link   onClick={() => dispatch(setVendorAddress(productInfo.owner))} to={`/products-by-owner/${productInfo.owner}`} className="text-blue hover:underline">
               {productInfo.owner}
             </Link>
           </p>

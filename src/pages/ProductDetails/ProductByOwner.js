@@ -4,6 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { createPublicClient, http } from "viem";
 import { rollux } from "viem/chains";
 import { CommerceABI } from "../../ABI/Commerce";
+import { useSelector } from "react-redux";
+
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
@@ -11,11 +13,15 @@ const ProductsByOwner = () => {
   const { ownerAddress } = useParams(); // Fetch owner address from route params
   const [products, setProducts] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
+  const vendorAddress1 = useSelector((state) => state.orebiReducer.vendorAddress);
+  const [vendorProducts, setVendorProducts] = useState([]);
 
   const publicClient = createPublicClient({
     chain: rollux,
     transport: http('https://rpc.rollux.com'),
   });
+
+  
 
   useEffect(() => {
     async function fetchProducts() {
@@ -28,8 +34,12 @@ const ProductsByOwner = () => {
 
         // Filter products by owner address
         const filteredProducts = getProducts.filter(
-          (product) => product.owner.toLowerCase() === ownerAddress.toLowerCase()
+          (product) => product.owner.toLowerCase() === vendorAddress1.toLowerCase()
         );
+
+        const vendorProductsList = getProducts.filter(product => product.owner === vendorAddress1);
+       setVendorProducts(filteredProducts);
+
 
         // Fetch images for each product based on the IPFS CID
         const productsWithImages = await Promise.all(
@@ -67,6 +77,9 @@ const ProductsByOwner = () => {
   const handleProductClick = (product) => {
     navigate(`/product-details/${product.id}`, { state: { item: product } });
   };
+
+  console.log('Owner', vendorProducts);
+
 
   return (
     <div className="w-full mx-auto">

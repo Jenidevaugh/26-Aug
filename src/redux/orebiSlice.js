@@ -7,7 +7,7 @@ const initialState = {
   products: [],
   totalAmount: 0,  // Add totalAmount to the initial state
   walletAddress: null, // Add walletAddress to the initial state
-
+vendorAddress: '', 
  };
 
 export const orebiSlice = createSlice({
@@ -74,6 +74,9 @@ export const orebiSlice = createSlice({
     setWalletAddress: (state, action) => {
       state.walletAddress = action.payload;
     },  
+    setVendorAddress: (state, action) => {
+      state.vendorAddress = action.payload;
+    },  
     },
 });
 
@@ -87,5 +90,6 @@ export const {
   setTotalAmounts,
   calculateTotalAmount,
   setWalletAddress,
+  setVendorAddress,
 } = orebiSlice.actions;
 export default orebiSlice.reducer;

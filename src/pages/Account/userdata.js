@@ -53,10 +53,6 @@ const UserData = () => {
     }
   }, [isConnected, address, navigate]);
 
-  const walletClient = createWalletClient({
-    chain: rollux,
-    transport: custom(window.ethereum)
-  });
 
   const [vendorProducts, setVendorProducts] = useState([]);
 
@@ -338,6 +334,12 @@ const UserData = () => {
 
   const handleStake = async () => {
     setclaimingSTake(true);
+
+    const walletClient = createWalletClient({
+      chain: rollux,
+      transport: custom(window.ethereum)
+    });
+  
     try {
       // Get and store address
       const [addressa] = await walletClient.getAddresses();
@@ -391,8 +393,13 @@ const UserData = () => {
 
   const handleUnStake = async () => {
     setclaimingUnSTake(true);
-    try {
 
+    const walletClient = createWalletClient({
+      chain: rollux,
+      transport: custom(window.ethereum)
+    });
+  
+    try {
 
       //Get and store address
       const [addressa] = await walletClient.getAddresses();
@@ -429,6 +436,11 @@ const UserData = () => {
 
   const handleClaimReward = async () => {
     setClaiming(true);
+    const walletClient = createWalletClient({
+      chain: rollux,
+      transport: custom(window.ethereum)
+    });
+  
     try {
 
 
