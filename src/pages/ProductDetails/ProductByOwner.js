@@ -62,7 +62,7 @@ const ProductsByOwner = () => {
     }
 
     fetchProducts();
-  }, [ownerAddress]);
+  }, []);
 
   const handleProductClick = (product) => {
     navigate(`/product-details/${product.id}`, { state: { item: product } });
