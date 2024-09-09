@@ -11,7 +11,7 @@ import { rollux } from "viem/chains";
 import { custom, http } from "viem";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
-import { FaArrowAltCircleRight, FaPlane, FaPlus } from "react-icons/fa";
+import { FaArrowAltCircleRight, FaPlus } from "react-icons/fa";
  
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
@@ -20,16 +20,14 @@ const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
 const VendorData = () => {
 
-  const [showMenu, setShowMenu] = useState(true);
-  const [sidenav, setSidenav] = useState(false);
+  //const [showMenu, setShowMenu] = useState(true);
+  //const [sidenav, setSidenav] = useState(false);
   const [category, setCategory] = useState(false);
   const [category1, setCategory1] = useState(false);
   const [banner, setBanner] = useState(false);
   const [sortVendor, setSortVendor] = useState([]);
   const [Orders, setOrders] = useState([]);
   const { address, isConnected } = useAccount();
-
-
 
 
   const [vendorProducts, setVendorProducts] = useState([]);
@@ -81,7 +79,8 @@ const VendorData = () => {
     }
 
     fetchData();
-  }, []);
+  }, );
+ 
 
   console.log(vendorProducts, 'vendor')
   console.log(address)

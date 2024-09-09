@@ -21,6 +21,9 @@ const ProductD = () => {
             <p>MintCap: {product.MintCap}</p>
             <p>Sold Out: {product.isSold ? "Yes" : "No"}</p>
             {/* Add more product details as needed */}
+
+            <p>Owner: {product.owner}</p>
+
         </div>
     );
 };

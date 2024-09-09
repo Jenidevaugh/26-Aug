@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
@@ -8,6 +9,7 @@ import { createPublicClient, http } from "viem";
 import { rollux } from "viem/chains";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/orebiSlice";
+import { FaInfo } from "react-icons/fa";
  
 
 const ProductDetails1 = () => {
@@ -150,6 +152,16 @@ const ProductDetails1 = () => {
         <p className="text-gray-500 mb-2">Category: {productInfo.category}</p>
         <p className="text-gray-500 mb-2">In Stock: {productInfo.MintCap}</p>
         <p className="text-gray-500">Sold Out: {productInfo.isSold ? "Yes" : "No"}</p>
+              
+         <p className="text-gray-500 mt-2">
+            Vendor Address: 
+            <Link to={`/products-by-owner/${productInfo.owner}`} className="text-blue hover:underline">
+              {productInfo.owner}
+            </Link>
+          </p>
+          <p className="flex text-gray-500"> <FaInfo color="blue"/> Click address to view other products posted by this vendor</p>
+
+ 
       </div>
     </div>
     <hr />

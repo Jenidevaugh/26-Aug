@@ -70,15 +70,13 @@ const Products = () => {
         setSortVendor(getProducts);
 
         setOrders(getBuyerOrders);
-
+        // Filter products based on the owner
         const vendorProductsList = getProducts.filter(product => product.owner === address);
         setVendorProducts(vendorProductsList);
 
-
-// console.log('Products response:', vendorProductsList);
         // Fetch images for each product based on the IPFS CID
         const productsWithImages = await Promise.all(
-          getProducts.map(async (product) => {
+          vendorProductsList.map(async (product) => {
             const options = {
               method: 'GET',
               headers: {
@@ -89,7 +87,6 @@ const Products = () => {
             const response = await fetch(`https://api.pinata.cloud/data/pinList?cid=${product.image}`, options);
             const imageData = await response.json();
 
-            // Assuming imageData.rows contains image data, adjust as needed
             const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageData.rows[0].ipfs_pin_hash}`;
 
             return {
@@ -99,10 +96,7 @@ const Products = () => {
           })
         );
 
-
-        // Update state with products and their associated images
         setProducts(productsWithImages);
-        // setProductsCount(getProductsCount);
 
       } catch (error) {
         console.error(error);
@@ -111,22 +105,25 @@ const Products = () => {
 
     fetchData();
   }, []);
-  console.log('Products response:', products);
+ //console.log('Products response:', products);
 
-  console.log(Orders, 'vendor')
+ // console.log(Orders, 'vendor')
   //console.log(address)
 
   return (
     <div className="w-full mx-auto">
-      <Header />
+    <Header />
 
-      <h4>Your Products Listed  for {address}</h4>
+    <h4>Your Products Listed for {address}</h4>
 
-      <div className="w-full bg-ash bg-opacity-40  Mix1 my-2 border px-4 py-6">
-        <h4>Your Current Listed Products</h4>
+    <div className="w-full bg-ash bg-opacity-40 Mix1 my-2 border px-4 py-6">
+      <h4>Your Current Listed Products</h4>
 
-        <div className="">
-          {products.map((product, index) => (
+      <div className="">
+        {products.length === 0 ? (
+          <p className="text-gray-500 text-center py-9">No Listed products yet.</p>
+        ) : (
+          products.map((product, index) => (
             <div
               key={index}
               className="bg-white shadow-md rounded-lg my-2 p-4 transition-transform transform hover:scale-95 hover:shadow-2xl duration-300 cursor-pointer flex flex-wrap items-start"
@@ -139,40 +136,34 @@ const Products = () => {
                 />
               </div>
               <div className="flex-grow max-w-full">
-                <h3 className="text-lg font-semibold mb-2 truncate">Owner: {product.buyer}</h3>
+                <h3 className="text-lg font-semibold mb-2 truncate">Owner: {product.owner}</h3>
                 <p className="text-gray-500 mb-1 truncate">Name: {product.title}</p>
-                 <p className="text-gray-500 mb-1 truncate">Category: {product.category}</p>
+                <p className="text-gray-500 mb-1 truncate">Category: {product.category}</p>
                 <p className="text-gray-500 mb-1 truncate">Description: {product.description}</p>
                 <p className="text-gray-500 mb-1 truncate">Price: {product.price.toString()}</p>
-                <p className="text-gray-500 mb-1 truncate">Sold Out: {product.isSold}</p>
+                <p className="text-gray-500 mb-1 truncate">Sold Out: {product.isSold ? "Yes" : "No"}</p>
               </div>
 
               <input
-              className="w-full h-11 px-3 border text-primeColor text-sm outline-none border-gray-900 rounded"
-              type="number"
-              placeholder="Increase Mint"
-            />            
-            
-            <button className="w-20 border my-2 py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont rounded">
-              Set
-            </button></div>
-          ))}
-        </div>
+                className="w-full h-11 px-3 border text-primeColor text-sm outline-none border-gray-900 rounded"
+                type="number"
+                placeholder="Increase Mint"
+              />
 
+              <button className="w-20 border my-2 py-2 bg-blue hover:bg-black duration-300 text-white text-lg font-titleFont rounded">
+                Set
+              </button>
+            </div>
+          ))
+        )}
       </div>
-
-
-
-
-
-
-      <span className="px-5"></span>
-
-      <Footer />
-      <FooterBottom />
-
-
     </div>
+
+    <span className="px-5"></span>
+
+    <Footer />
+    <FooterBottom />
+  </div>
   );
 };
 
