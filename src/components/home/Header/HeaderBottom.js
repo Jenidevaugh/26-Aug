@@ -61,11 +61,7 @@ const HeaderBottom = () => {
         transport: http('https://rpc.rollux.com')
       });
 
-      const walletClient = createWalletClient({
-        chain: rollux,
-        transport: custom(window.ethereum)
-      });
-
+  
       const [addressa] = await walletClient.getAddresses();
 
       try {
