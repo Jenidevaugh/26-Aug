@@ -30,6 +30,7 @@ module.exports = {
         CornflowerBlue: "#6495ED",
         deepb:"#14067c",
         DarkSlateBlue: "#483D8B",
+
         reddy:"#ff0202",
         cornsilk:"#fff8dc",
         gradienMix1: "linear-gradient(from-red-500 to-green-200)",
