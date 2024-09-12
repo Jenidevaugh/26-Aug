@@ -11,7 +11,7 @@ const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
 const ProductsByOwner = () => {
   const { ownerAddress } = useParams(); // Fetch owner address from route params
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([null]);
   const navigate = useNavigate(); // Hook for navigation
   const vendorAddress1 = useSelector((state) => state.orebiReducer.vendorAddress);
   const [vendorProducts, setVendorProducts] = useState([]);
@@ -161,7 +161,7 @@ const ProductsByOwner = () => {
 
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {products.length === 0 ? (
+        {!products.length === 0 ? (
           <p className="text-gray-500 text-center py-9">No Listed products yet.</p>
         ) : (
 
