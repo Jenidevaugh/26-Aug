@@ -7,6 +7,17 @@ import { CommerceABI } from "../../ABI/Commerce";
 import { useSelector } from "react-redux";
 import HeaderBottom from "../../components/home/Header/HeaderBottom";
 import Loading from "../Others/Loadingss";
+import { PinataSDK } from "pinata";
+
+const Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2MWUzYThkOC05ZDk0LTRhZTUtYTRkOS1mYTFkYjJmZjE4MTUiLCJlbWFpbCI6ImplbmlkZXZhdWdobnF4bjg0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiIwODM1NGM5YzUzNDc0ZGRiNTYyNSIsInNjb3BlZEtleVNlY3JldCI6IjBiMTY1NDQwNGMxZDAwOTIzYmU3YzZjMDQzOTYwZGU3NzdmMDEyYmUwZGZjMjJiYjNiNDNmY2VmNDBhOTM3MjUiLCJleHAiOjE3NTU3NDg3NzV9.GTO6sKrnG9PmaCwIDXb1lwALHzwhBsqGk37mAHn21Uk';
+
+const pinata = new PinataSDK({
+  pinataJwt: Authorization,
+  pinataGateway: "https://gateway.pinata.cloud/",
+
+});
+
+console.log(pinata);
 
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
@@ -18,7 +29,7 @@ const ProductsByOwner = () => {
   const navigate = useNavigate(); // Hook for navigation
   const vendorAddress1 = useSelector((state) => state.orebiReducer.vendorAddress);
   const [vendorProducts, setVendorProducts] = useState([]);
-  const [pollingInterval, setPollingInterval] = useState(60000); // Poll every 60 seconds
+  const [pollingInterval, setPollingInterval] = useState(120000); // Poll every 60 seconds
   const [Orders, setOrders] = useState([]);
 
   //useEffect(() => {
@@ -109,11 +120,11 @@ const ProductsByOwner = () => {
           (product) => product.owner.toLowerCase() === ownerAddress.toLowerCase()
         );
 
-        
-        
+
+
         const vendorProductsList = getProducts.filter(product => product.owner === vendorAddress1);
         setVendorProducts(vendorProductsList);
-// Ensure getProducts is an array
+        // Ensure getProducts is an array
         if (Array.isArray(getProducts)) {
           setOrders(vendorProductsList);
         } else {
@@ -127,6 +138,7 @@ const ProductsByOwner = () => {
               method: "GET",
               headers: {
                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2MWUzYThkOC05ZDk0LTRhZTUtYTRkOS1mYTFkYjJmZjE4MTUiLCJlbWFpbCI6ImplbmlkZXZhdWdobnF4bjg0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiIwODM1NGM5YzUzNDc0ZGRiNTYyNSIsInNjb3BlZEtleVNlY3JldCI6IjBiMTY1NDQwNGMxZDAwOTIzYmU3YzZjMDQzOTYwZGU3NzdmMDEyYmUwZGZjMjJiYjNiNDNmY2VmNDBhOTM3MjUiLCJleHAiOjE3NTU3NDg3NzV9.GTO6sKrnG9PmaCwIDXb1lwALHzwhBsqGk37mAHn21Uk',
+                Request: 'no-cors',
               },
             };
 
@@ -134,6 +146,8 @@ const ProductsByOwner = () => {
               `https://api.pinata.cloud/data/pinList?cid=${product.image}`,
               options
             );
+
+
 
             if (!response.ok) {
               throw new Error(`Failed to fetch image data: ${response.statusText}`);
@@ -157,9 +171,9 @@ const ProductsByOwner = () => {
 
     fetchProducts();
 
-    const intervalId = setInterval(fetchProducts, pollingInterval);
-    return () => clearInterval(intervalId);
-  }, [ownerAddress, pollingInterval, vendorAddress1]);
+  const intervalId = setInterval(fetchProducts, pollingInterval);
+   return () => clearInterval(intervalId);
+  }, [vendorAddress1, products,  ]);
 
 
   const handleProductClick = (product) => {
@@ -169,13 +183,12 @@ const ProductsByOwner = () => {
   console.log('Owner', vendorProducts);
   // console.log( filteredProducts);
 
-  const slicedAddress = ownerAddress.slice(0, 10); 
+  const slicedAddress = ownerAddress.slice(0, 10);
   return (
     <div className="w-full mx-auto">
-  <Loading/>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {products11.length === 0 ? (
-          <p className="text-gray-500 text-center py-9"> <Loading/></p>
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        {products.length == 0 ? (
+          <p className="text-gray-500 text-center py-9"> <Loading /></p>
         ) : (
 
 
@@ -189,8 +202,8 @@ const ProductsByOwner = () => {
                 Products by : {slicedAddress}
               </p>
               <img
-                  src={product.imageUrl}
-                  alt={product.title}
+                src={product.imageUrl}
+                alt={product.title}
                 className="w-full h-48 object-cover rounded-t-lg mb-4"
               />
               <h3 className="text-lg font-semibold">{product.title}</h3>
