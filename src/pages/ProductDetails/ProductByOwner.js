@@ -6,6 +6,7 @@ import { rollux } from "viem/chains";
 import { CommerceABI } from "../../ABI/Commerce";
 import { useSelector } from "react-redux";
 import HeaderBottom from "../../components/home/Header/HeaderBottom";
+import Loading from "../Others/Loadingss";
 
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
@@ -171,10 +172,10 @@ const ProductsByOwner = () => {
   const slicedAddress = ownerAddress.slice(0, 10); 
   return (
     <div className="w-full mx-auto">
- 
+  <Loading/>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {products11.length === 0 ? (
-          <p className="text-gray-500 text-center py-9">No Listed products yet.</p>
+          <p className="text-gray-500 text-center py-9"> <Loading/></p>
         ) : (
 
 

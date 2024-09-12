@@ -257,6 +257,8 @@ const walletClient = createWalletClient({
 
     console.log(productsCheck);
 
+    const message = !productsCheck ? `🛒 You have ${productsCheck.length} product in your cart. Proceed to Checkout` : null;
+
     return (
         <div className="flex">
 
@@ -302,8 +304,8 @@ const walletClient = createWalletClient({
                     </div>
                 ) : (
                     <div>
-                        <div className="mb-4 ">{!productsCheck ? '🛒 Proceed to Checkout' : '🤔 You have not products to Checkout'}</div>
-
+                        <div className="mb-4 ">{message}</div>
+                       
                         <div className='mx-2 my-2 text-white w-fit p-2 h-50 bg-blue rounded-lg'>
                             <h1>To confirm payment to metamask wallet</h1>
 
@@ -314,6 +316,22 @@ const walletClient = createWalletClient({
                     </div>
 
                 )}
+
+<div className="m-2 y-2">
+                        <div className="text-lg flex font-semibold text-black mb-2">Products in Cart</div>
+                        {productsCheck.length ? (
+                            productsCheck.map(product => (
+                                <div key={product._id} className="flex flex-col gap-1 mb-1 p-1 border rounded bg-gray-800">
+                                     <div className="text-white font-semibold">{product.name}</div>
+                                    <div className="text-gray-400">Price: ${product.price}</div>
+                                    <div className="text-gray-400">Quantity: {product.quantity}</div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-gray-400">No products in cart</div>
+                        )}
+                    </div>
+
 
                 <div className="m-2 y-2 flex gap-2 items-center">
                     Confirmed transactions: <FaCheck color="green" /> <span className="flex gap-1 items-center">  {'1'} / <FaShoppingBag colorInterpolationFilters="RGB" /> {'5'} </span>

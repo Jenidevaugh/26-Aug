@@ -387,7 +387,6 @@ const UserData = () => {
     setclaimingSTake(false);
   };
 
-
   const [claimingUnSTake, setclaimingUnSTake] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
