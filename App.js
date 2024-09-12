@@ -43,7 +43,7 @@ const Layout = () => {
       <HeaderBottom />
       <SpecialCase />
       <ScrollRestoration />
-
+    
       <Outlet />
       <Footer />
       <FooterBottom />
