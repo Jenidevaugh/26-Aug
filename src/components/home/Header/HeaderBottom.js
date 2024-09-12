@@ -62,7 +62,7 @@ const HeaderBottom = () => {
       );
       setFilteredProducts(filtered);
     }
-  }, [searchQuery, productsForSearch]);
+  },);
 
 
 
