@@ -140,8 +140,7 @@ const ProductDetails1 = () => {
   };
 
 
-  console.log (vendorAddress1);
-
+ 
   return (
     <div className="w-full mx-auto border-b-[1px] border-b-gray-300">
     <div className="max-w-container mx-auto px-4">
