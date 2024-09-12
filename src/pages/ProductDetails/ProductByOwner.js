@@ -169,35 +169,9 @@ const ProductsByOwner = () => {
     <div className="w-full mx-auto">
  
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {products.length === 0 ? (
+      
           <p className="text-gray-500 text-center py-9">No Listed products yet.</p>
-        ) : (
-
-
-          products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 cursor-pointer"
-              onClick={() => handleProductClick(product)}
-            >
-              <p className="text-l font-semibold bg-blue-100 text-blue rounded-lg px-6 py-4 shadow-md">
-                Products by : {slicedAddress}
-              </p>
-              <img
-                  src={product.imageUrl}
-                  alt={product.title}
-                className="w-full h-48 object-cover rounded-t-lg mb-4"
-              />
-              <h3 className="text-lg font-semibold">{product.title}</h3>
-              <p className="text-gray-600 mb-2">{product.description}</p>
-              <p className="text-gray-800 font-bold mb-2">Price: {product.price}</p>
-              <p className="text-gray-500 mb-2">Category: {product.category}</p>
-              <p className="text-gray-500 mb-2">MintCap: {product.MintCap}</p>
-              <p className="text-gray-500">Sold Out: {product.isSold ? "Yes" : "No"}</p>
-            </div>
-          )))
-        }
-
+    
       </div>
 
 
