@@ -16,6 +16,7 @@ import { CommerceABI } from "../../../ABI/Commerce";
 import { rollux } from "viem/chains";
 import { http } from "viem";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../../pages/Others/LoadingssShort";
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
@@ -134,7 +135,7 @@ const publicClient = createPublicClient({
     <div className="w-full pb-16">
       <Heading heading="New Arrivals" />
       {loading ? ( // Conditionally render loading text
-        <div className="text-center py-4 my-7">Loading products...</div>
+        <div className="text-center py-4 my-7"> <Loading/> </div>
       ) : (
         <Slider {...settings}>
           {products.map((product, index) => (

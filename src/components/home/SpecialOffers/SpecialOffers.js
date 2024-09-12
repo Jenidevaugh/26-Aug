@@ -6,6 +6,7 @@ import { createPublicClient } from "viem";
 import { CommerceABI } from "../../../ABI/Commerce";
 import { rollux } from "viem/chains";
 import { http } from "viem";
+import Loading from "../../../pages/Others/LoadingssShort";
 
 // Replace with actual contract address
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
@@ -84,7 +85,7 @@ const SpecialOffers = () => {
     <div className="w-full pb-20">
       <Heading heading="Special Offers" />
       {loading ? ( // Conditionally render loading text
-        <div className="text-center py-4 my-7">Loading Special Offers...</div>
+        <div className="text-center py-4 my-7"><Loading/></div>
       ) : (<div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
         {displayedProducts.map((product, index) => (
           <div key={index} className="px-2">

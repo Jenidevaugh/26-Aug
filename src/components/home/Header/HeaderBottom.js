@@ -5,27 +5,30 @@ import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { paginationItems } from "../../../constants";
 import { useAccount } from 'wagmi';
-import { createPublicClient, createWalletClient } from "viem";
+import { createPublicClient } from "viem";
 import { rollux } from "viem/chains";
-import { http, custom } from "viem";
+import { http } from "viem";
 import { CommerceABI } from "../../../ABI/Commerce";
-
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
 const HeaderBottom = () => {
-  const products = useSelector((state) => state.orebiReducer.products);
+  const products = useSelector((state) => state.orebiReducer.products || []);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
   const [Orders, setOrders] = useState([]);
+  const [productsForSearch, setProductsForSearch] = useState([]); // Initialize products as an empty array
+  const [productsForSearch1, setProductsForSearch1] = useState([]); // Initialize products as an empty array
 
   const address1 = useAccount();
 
-  //console.log(address1.address);
+  useEffect(() => {
+    console.log('Orders:', Orders);
+  }, [Orders]);
+
   useEffect(() => {
     const handleClick = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -34,15 +37,13 @@ const HeaderBottom = () => {
         setShow(true);
       }
     };
-  
+
     document.body.addEventListener("click", handleClick);
-  
-    // Clean up the event listener on component unmount
+
     return () => {
       document.body.removeEventListener("click", handleClick);
     };
   }, [show, ref]);
-  
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -53,42 +54,81 @@ const HeaderBottom = () => {
   };
 
   useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-  }, [searchQuery]);
+    if (productsForSearch.length > 0) {
+      const filtered = productsForSearch.filter((item) =>
+        item.title &&
+        typeof item.title === 'string' &&
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchQuery, productsForSearch]);
+
+
+
+  useEffect(() => {
+    console.log('Search Query:', searchQuery);
+    console.log('Filtered Products:', productsForSearch);
+  }, [filteredProducts]);
 
 
   useEffect(() => {
     async function fetchData() {
-
       const publicClient = createPublicClient({
         chain: rollux,
         transport: http('https://rpc.rollux.com')
       });
 
-    
       try {
-           const getProducts = await publicClient.readContract({
-             //account: addressa,
-             address: Commercecontract,
-             abi: CommerceABI,
-             functionName: 'getAllProducts',
-           });
-      
+        const getProducts = await publicClient.readContract({
+          address: Commercecontract,
+          abi: CommerceABI,
+          functionName: 'getAllProducts',
+        });
 
+        setProductsForSearch1(getProducts)
+        console.log('Fetched Products:', getProducts);
 
-        setOrders(getProducts);
-              console.log('Products response:', getProducts);
+        // Ensure getProducts is an array
+        if (Array.isArray(getProducts)) {
+          setOrders(getProducts);
+        } else {
+          console.error('Fetched data is not an array:', getProducts);
+        }
 
+        // Fetch images for each product based on the IPFS CID
+        const productsWithImages = await Promise.all(
+          Orders.map(async (product) => {
+            const options = {
+              method: 'GET',
+              headers: {
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2MWUzYThkOC05ZDk0LTRhZTUtYTRkOS1mYTFkYjJmZjE4MTUiLCJlbWFpbCI6ImplbmlkZXZhdWdobnF4bjg0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiIwODM1NGM5YzUzNDc0ZGRiNTYyNSIsInNjb3BlZEtleVNlY3JldCI6IjBiMTY1NDQwNGMxZDAwOTIzYmU3YzZjMDQzOTYwZGU3NzdmMDEyYmUwZGZjMjJiYjNiNDNmY2VmNDBhOTM3MjUiLCJleHAiOjE3NTU3NDg3NzV9.GTO6sKrnG9PmaCwIDXb1lwALHzwhBsqGk37mAHn21Uk',
+              },
+            };
+
+            const response = await fetch(`https://api.pinata.cloud/data/pinList?cid=${product.image}`, options);
+            const imageData = await response.json();
+
+            // Assuming imageData.rows contains image data, adjust as needed
+            const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageData.rows[0].ipfs_pin_hash}`;
+
+            return {
+              ...product,
+              imageUrl, // Add the image URL to the product object
+            };
+          })
+        );
+
+        // Update state with products and their associated images
+        setProductsForSearch(productsWithImages);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching data:', error);
       }
     }
 
     fetchData();
   }, []);
+
 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
@@ -144,44 +184,41 @@ const HeaderBottom = () => {
             <FaSearch className="w-5 h-5" />
             {searchQuery && (
               <div
-                className={`w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer`}
-              >
-                {searchQuery &&
-                  filteredProducts.map((item) => (
-                    <div
-                      onClick={() =>
-                        navigate(
-                          `/product/${item.productName
-                            .toLowerCase()
-                            .split("")
-                            .join("")}`,
-                          {
-                            state: {
-                              item: item,
-                            },
-                          }
-                        ) &
-                        setShowSearchBar(true) &
-                        setSearchQuery("")
-                      }
-                      key={item._id}
-                      className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3"
-                    >
-                      <img className="w-24" src={item.img} alt="productImg" />
-                      <div className="flex flex-col gap-1">
-                        <p className="font-semibold text-lg">
-                          {item.productName}
-                        </p>
-                        <p className="text-xs">{item.des}</p>
-                        <p className="text-sm">
-                          Price:{" "}
-                          <span className="text-primeColor font-semibold">
-                            ${item.price}
-                          </span>
-                        </p>
-                      </div>
+                className={`w-full mx-auto h-fit bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer`}
+               >
+                {filteredProducts.map((item) => (
+                  <div 
+                    onClick={() =>
+                      navigate(
+                        `/product-details/${item.id}`,
+                        {
+                          state: {
+                            item: item,
+                          },
+                        }
+                      ) &
+                      setShowSearchBar(true) &
+                      setSearchQuery("")
+                    }
+                    key={item._id}
+                    className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3"
+                  >
+                    <img className="w-24" src={item.imageUrl} alt={item.title} />
+                    <div 
+                      className="flex flex-col gap-1">
+                      <p className="font-semibold text-lg">
+                        {item.title}
+                      </p>
+                      <p className="text-xs">{item.description}</p>
+                      <p className="text-sm">
+                        Price:{" "}
+                        <span className="text-primeColor font-semibold">
+                          ${item.price}
+                        </span>
+                      </p>
                     </div>
-                  ))}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -215,20 +252,10 @@ const HeaderBottom = () => {
                         Sign Up
                       </li>
                     </Link>
-
-
                   </>
                 )}
               </motion.ul>
             )}
-            {/* <Link to="/cart">
-              <div className="relative">
-                <FaShoppingCart />
-                <span className="absolute font-titleFont top-3 -right-2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
-                  {products.length > 0 ? products.length : 0}
-                </span>
-              </div>
-            </Link> */}
           </div>
         </Flex>
       </div>
