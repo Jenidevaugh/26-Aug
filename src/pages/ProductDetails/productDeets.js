@@ -140,9 +140,6 @@ const ProductDetails1 = () => {
   };
 
 
-  const vendorAddress1 = useSelector((state) => state.orebiReducer.vendorAddress);
-
-
   console.log (vendorAddress1);
 
   return (
