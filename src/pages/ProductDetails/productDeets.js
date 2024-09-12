@@ -24,10 +24,8 @@ const ProductDetails1 = () => {
   const [productsCount, setProductsCount] = useState([]);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const dispatch = useDispatch();
-  const [vendorProducts, setVendorProducts] = useState([]);
-
-  const vendorAddress12 = useSelector((state) => state.orebiReducer.vendorAddress);
-
+ 
+ 
 
   const weiToEther = (wei) => wei / 1e18;
 
@@ -75,16 +73,6 @@ const ProductDetails1 = () => {
           abi: CommerceABI,
           functionName: "productCount",
         });
-
-        
-        const filteredProducts = getProducts.filter(
-          (product) => product.owner.toLowerCase() === getProducts.owner.toLowerCase()
-        );
-      
-        
-        const vendorProductsList = getProducts.filter(product => product.owner === vendorAddress1);
-        setVendorProducts(vendorProductsList);
-
 
         const productsWithImages = await Promise.all(
           getProducts.map(async (product) => {
