@@ -5,17 +5,19 @@ import { createPublicClient, http } from "viem";
 import { rollux } from "viem/chains";
 import { CommerceABI } from "../../ABI/Commerce";
 import { useSelector } from "react-redux";
+import HeaderBottom from "../../components/home/Header/HeaderBottom";
 
 
 const Commercecontract = "0x2e0b6cb6dB7247f132567d17D0b944bAa503d21A";
 
 const ProductsByOwner = () => {
   const { ownerAddress } = useParams(); // Fetch owner address from route params
-  const [products, setProducts] = useState([null]);
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
   const vendorAddress1 = useSelector((state) => state.orebiReducer.vendorAddress);
   const [vendorProducts, setVendorProducts] = useState([]);
   const [pollingInterval, setPollingInterval] = useState(60000); // Poll every 60 seconds
+  const [Orders, setOrders] = useState([]);
 
   //useEffect(() => {
   //  async function fetchProducts() {
@@ -102,10 +104,17 @@ const ProductsByOwner = () => {
           (product) => product.owner.toLowerCase() === ownerAddress.toLowerCase()
         );
 
-        console.log('Filtered Products:', filteredProducts);
-
+        
+        
         const vendorProductsList = getProducts.filter(product => product.owner === vendorAddress1);
         setVendorProducts(vendorProductsList);
+// Ensure getProducts is an array
+        if (Array.isArray(getProducts)) {
+          setOrders(vendorProductsList);
+        } else {
+          console.error('Fetched data is not an array:', getProducts);
+        }
+        console.log('Filtered Products:', Orders);
 
         const productsWithImages = await Promise.all(
           vendorProductsList.map(async (product) => {
@@ -158,10 +167,9 @@ const ProductsByOwner = () => {
   const slicedAddress = ownerAddress.slice(0, 10); 
   return (
     <div className="w-full mx-auto">
-
-
+ 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {!products.length === 0 ? (
+        {products.length === 0 ? (
           <p className="text-gray-500 text-center py-9">No Listed products yet.</p>
         ) : (
 
@@ -176,13 +184,13 @@ const ProductsByOwner = () => {
                 Products by : {slicedAddress}
               </p>
               <img
-                src={product.imageUrl}
-                alt={product.title}
+                  src={product.imageUrl}
+                  alt={product.title}
                 className="w-full h-48 object-cover rounded-t-lg mb-4"
               />
               <h3 className="text-lg font-semibold">{product.title}</h3>
               <p className="text-gray-600 mb-2">{product.description}</p>
-              <p className="text-gray-800 font-bold mb-2">Price: {product.price.toString().slice(0, 2)}</p>
+              <p className="text-gray-800 font-bold mb-2">Price: {product.price}</p>
               <p className="text-gray-500 mb-2">Category: {product.category}</p>
               <p className="text-gray-500 mb-2">MintCap: {product.MintCap}</p>
               <p className="text-gray-500">Sold Out: {product.isSold ? "Yes" : "No"}</p>
