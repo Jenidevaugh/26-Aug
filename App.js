@@ -52,8 +52,8 @@ const Layout = () => {
 };
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route >
-      <Route path="/" element={<Layout />} >
+    <Route errorElement = {<ErrorPage/>}>
+      <Route path="/" element={<Layout />}>
         {/* ==================== Header Navlink Start here =================== */}
         <Route index element={<Home />}></Route>
        {/* <Route path="/shop" element={<Shop />}></Route>*/}
@@ -63,7 +63,7 @@ const router = createBrowserRouter(
         {/* ==================== Header Navlink End here ===================== */}
         <Route path="/offer" element={<Offer />}></Route>
         <Route path="/product-details/:id" element={<ProductDetails1 />}></Route>
-        <Route path="/products-by-owner/:ownerAddress" element={<ProductsByOwner />} />
+        <Route path="/products-by-owner/:ownerAddress" element={<ProductsByOwner />} > </Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/paymentgateway" element={<Payment />}></Route>
       </Route>
