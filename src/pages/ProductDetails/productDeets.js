@@ -11,6 +11,9 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/orebiSlice";
 import { FaInfo } from "react-icons/fa";
  import { setVendorAddress } from "../../redux/orebiSlice";
+import { useSelector } from "react-redux";
+
+
 
 const ProductDetails1 = () => {
   const location = useLocation();
@@ -21,8 +24,10 @@ const ProductDetails1 = () => {
   const [productsCount, setProductsCount] = useState([]);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const dispatch = useDispatch();
+  const [vendorProducts, setVendorProducts] = useState([]);
 
-  
+  const vendorAddress12 = useSelector((state) => state.orebiReducer.vendorAddress);
+
 
   const weiToEther = (wei) => wei / 1e18;
 
@@ -70,6 +75,16 @@ const ProductDetails1 = () => {
           abi: CommerceABI,
           functionName: "productCount",
         });
+
+        
+        const filteredProducts = getProducts.filter(
+          (product) => product.owner.toLowerCase() === getProducts.owner.toLowerCase()
+        );
+      
+        
+        const vendorProductsList = getProducts.filter(product => product.owner === vendorAddress1);
+        setVendorProducts(vendorProductsList);
+
 
         const productsWithImages = await Promise.all(
           getProducts.map(async (product) => {
@@ -136,6 +151,12 @@ const ProductDetails1 = () => {
     }
   };
 
+
+  const vendorAddress1 = useSelector((state) => state.orebiReducer.vendorAddress);
+
+
+  console.log (vendorAddress1);
+
   return (
     <div className="w-full mx-auto border-b-[1px] border-b-gray-300">
     <div className="max-w-container mx-auto px-4">
@@ -157,7 +178,7 @@ const ProductDetails1 = () => {
               
          <p className="text-gray-500 mt-2">
             Vendor Address: 
-            <Link   onClick={() => dispatch(setVendorAddress(productInfo.owner))} to={`/products-by-owner/${productInfo.owner}`} className="text-blue hover:underline">
+            <Link   onClick={() => dispatch(setVendorAddress(productInfo.owner))} to={`/products-by-owner/${encodeURIComponent(productInfo.owner)}`} className="text-blue hover:underline">
               {productInfo.owner}
             </Link>
           </p>
