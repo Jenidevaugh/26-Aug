@@ -25,7 +25,7 @@ import Shop from "./pages/Shop/Shop";
 import UserData from "./pages/Account/userdata";
 import AppProduct from "./pages/Account/addProd";
 import VendorData from "./pages/Account/vendorData";
-import ErrorPage from "./pages/Errors/ErrorPage";
+//import ErrorPage from "./pages/Errors/ErrorPage";
 import PlayApp from "./Play/play";
 import Tasks from "./Play/Componentss/Tasks";
 import Leaderboard from "./Play/Componentss/Leaderboard";
@@ -43,7 +43,7 @@ const Layout = () => {
       <HeaderBottom />
       <SpecialCase />
       <ScrollRestoration />
-    
+
       <Outlet />
       <Footer />
       <FooterBottom />
@@ -53,7 +53,7 @@ const Layout = () => {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route >
-      <Route path="/" element={<Layout />}>
+      <Route path="/">
         {/* ==================== Header Navlink Start here =================== */}
         <Route index element={<Home />}></Route>
        {/* <Route path="/shop" element={<Shop />}></Route>*/}
